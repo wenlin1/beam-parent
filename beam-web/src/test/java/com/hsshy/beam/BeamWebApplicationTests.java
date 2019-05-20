@@ -1,3 +1,4 @@
+/*
 package com.hsshy.beam;
 
 import org.junit.Test;
@@ -12,5 +13,8 @@ public class BeamWebApplicationTests {
     @Test
     public void contextLoads() {
     }
+*/
+/**//*
 
 }
+*/
