@@ -75,6 +75,11 @@ export default new Router({
                     path: '/operationlog',
                     component: resolve => require(['../components/sys/operationlog.vue'], resolve),
                     meta: { title: '业务日志' }
+                },
+                {
+                    path: '/sysclientele',
+                    component: resolve => require(['../components/sys/sysclientele.vue'], resolve),
+                    meta: { title: '客户管理' }
                 }
 
             ]

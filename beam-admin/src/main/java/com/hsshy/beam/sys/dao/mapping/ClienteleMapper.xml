@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsshy.beam.sys.dao.ClienteleMapper">
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.hsshy.beam.sys.entity.Clientele" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="customerStoreName" column="customer_store_name"/>
+        <result property="customerContactName" column="customer_contact_name"/>
+        <result property="customerPhone" column="customer_phone"/>
+        <result property="createPersonId" column="create_person_id"/>
+        <result property="createPersonName" column="create_person_name"/>
+        <result property="updatePersonId" column="update_person_id"/>
+        <result property="updatePersonName" column="update_person_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="customerType" column="customer_type"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        a.`id` AS "id",
+        a.`customer_store_name` AS "customerStoreName",
+        a.`customer_contact_name` AS "customerContactName",
+        a.`customer_phone` AS "customerPhone",
+         a.`create_person_id` AS "createPersonId",
+        a.`create_person_name` AS "createPersonName",
+        a.`update_person_id` AS "updatePersonId",
+        a.`update_person_name` AS "updatePersonName",
+        a.`create_time` AS "createTime",
+        a.`update_time` AS "updateTime",
+        a.`customer_type` AS "customerType"
+    </sql>
+    <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.Clientele">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_clientele a
+        WHERE a.is_delete = 0
+        ORDER BY a.`create_time` desc
+    </select>
+    <!--保存客户信息-->
+    <insert id="saveClientele">
+        insert into sys_clientele (customer_store_name,customer_contact_name,customer_phone,
+        create_person_id,create_person_name,customer_type,is_delete)
+        values( #{clientele.customerStoreName}, #{clientele.customerContactName},#{clientele.customerPhone}, #{clientele.createPersonId},
+          #{clientele.createPersonName},#{clientele.customerType},0)
+    </insert>
+    <update id="delClienteleByid">
+        UPDATE sys_clientele  SET is_delete=1 WHERE id=#{id}
+    </update>
+</mapper>
