@@ -9,7 +9,8 @@
             <div class="handle-box">
 
 
-                <el-input style="width: 150px" v-model="req.clientname" placeholder="请输入客户名称"></el-input>
+                <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
+                <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
@@ -24,17 +25,18 @@
                 </el-table-column>
                 <el-table-column label="联系人电话" align="center" prop="customerPhone">
                 </el-table-column>
-                <el-table-column label="创建人姓名" align="center" prop="createPersonName">
+                <el-table-column label="添加人" align="center" prop="createPersonName">
                 </el-table-column>
-                <el-table-column label="创建时间" align="center" prop="createTime">
+                <el-table-column label="添加时间" align="center" prop="createTime">
                 </el-table-column>
-                <el-table-column label="修改人姓名" align="center" prop="updatePersonName">
+                <el-table-column label="销售人" align="center" prop="updatePersonName">
                 </el-table-column>
                 <el-table-column label="修改时间" align="center" prop="updateTime">
                 </el-table-column>
                 <el-table-column label="客户类型" align="center" prop="customerType">
                    <template slot-scope="scope">
-                        <span>{{changeRemarkLength(scope.row.customerType)}}</span>
+                        <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
+                        <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
@@ -138,9 +140,9 @@
             changeRemarkLength() {
                 return function (text) {
                     if (text == "1") {
-                        return '普通用户'
+                        return '普通客户'
                     } else if (text =="2") {
-                        return '重点用户'
+                        return '重点客户'
                     }
                 }
             },
