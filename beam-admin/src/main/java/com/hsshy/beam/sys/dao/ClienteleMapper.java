@@ -13,4 +13,7 @@ public interface ClienteleMapper extends BaseMapper<Clientele> {
     void saveClientele(@Param("clientele") Clientele clientele);
 
     void delClienteleByid(Long id);
+
+    Clientele getByClienteleId(Long id);
+    void updateClientele(@Param("clientele") Clientele clientele);
 }

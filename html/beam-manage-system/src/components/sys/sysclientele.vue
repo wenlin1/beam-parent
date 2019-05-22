@@ -11,6 +11,7 @@
 
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
+                <el-input style="width: 150px" v-model="req.salesName" placeholder="销售人"></el-input>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
@@ -29,10 +30,10 @@
                 </el-table-column>
                 <el-table-column label="添加时间" align="center" prop="createTime">
                 </el-table-column>
-                <el-table-column label="销售人" align="center" prop="updatePersonName">
+                <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
-                <el-table-column label="修改时间" align="center" prop="updateTime">
-                </el-table-column>
+               <!-- <el-table-column label="修改时间" align="center" prop="updateTime">-->
+              <!--  </el-table-column>-->
                 <el-table-column label="客户类型" align="center" prop="customerType">
                    <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
@@ -73,6 +74,13 @@
                 <el-form-item  label="联系人电话" prop="customerPhone">
                     <el-input v-model="clientele.customerPhone"></el-input>
                 </el-form-item>
+                <el-form-item  label="销售人" prop="salesName">
+                  <!--  <dropdown :item-click="dropDownClick" :isNeedSearch="true" :itemlist="itemlist"></dropdown>-->
+                   <!-- <el-input v-model="clientele.salesName"><dropdown :itemlist="itemlist" :placeholder="placeholder"
+                                                                      :nodatatext="nodatatext"></dropdown></el-input>-->
+
+
+                </el-form-item>
                 <el-form-item label="客户类型" prop="customerType">
                     <el-select v-model="clientele.customerType" placeholder="请选择">
                         <el-option
@@ -102,8 +110,11 @@
 
 <script>
     import ClienteleApi from '../../api/clientele';
+    import ElSelectDropdown from "element-ui/packages/select/src/select-dropdown";
+    /*import Dropdown from '@/components/common/dropdown.vue';*/
 
     export default {
+        components: {ElSelectDropdown},
         name: 'basetable',
         data() {
             return {
@@ -130,6 +141,10 @@
                     label: 'name'
                 },
                 checkMenuData:[],
+                itemlist: [],
+                placeholder: "搜索",
+                nodatatext: "暂无数据",
+                selectValue: "",
                 roleId:null
             }
         },
@@ -148,6 +163,14 @@
             },
         },
         methods: {
+            itemClick(data) {
+                this.selectValue= data
+            },
+            getInputValue(searchvalue) {
+                console.log(searchvalue)
+                // 请求获取筛选列表
+
+            },
                 handleCurrentChange(val) {
                     this.page.pageNo = val;
                     this.getData();
@@ -236,7 +259,7 @@
                 },
                 //计算属性
 
-            }
+            },
 
     }
 

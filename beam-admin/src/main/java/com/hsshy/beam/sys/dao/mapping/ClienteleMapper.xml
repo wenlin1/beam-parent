@@ -28,6 +28,8 @@
         a.`update_person_name` AS "updatePersonName",
         a.`create_time` AS "createTime",
         a.`update_time` AS "updateTime",
+        a.`sales_account` AS "salesAccount",
+        a.`sales_name` AS "salesName",
         a.`customer_type` AS "customerType"
     </sql>
     <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.Clientele">
@@ -35,6 +37,15 @@
         <include refid="Base_Column_List"/>
         from sys_clientele a
         WHERE a.is_delete = 0
+        <if test="clientele.customerStoreName != null and clientele.customerStoreName != ''">
+            and a.customer_store_name=#{clientele.customerStoreName}
+        </if>
+        <if test="clientele.customerPhone != null and clientele.customerPhone != ''">
+            and a.customer_phone=#{clientele.customerPhone}
+        </if>
+        <if test="clientele.salesName != null and clientele.salesName != ''">
+            and a.sales_name=#{clientele.salesName}
+        </if>
         ORDER BY a.`create_time` desc
     </select>
     <!--保存客户信息-->
@@ -46,5 +57,34 @@
     </insert>
     <update id="delClienteleByid">
         UPDATE sys_clientele  SET is_delete=1 WHERE id=#{id}
+    </update>
+    <select id="getByClienteleId" resultType="com.hsshy.beam.sys.entity.Clientele">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_clientele a
+        WHERE a.is_delete = 0
+        and id=#{id}
+    </select>
+    <update id="updateClientele">
+        update sys_clientele
+        <trim prefix="SET" prefixOverrides=",">
+            update_time=#{clientele.updateTime}
+            <if test="clientele.customerContactName != null and clientele.customerContactName != ''">
+                ,customer_contact_name=#{clientele.customerContactName}
+            </if>
+            <if test="clientele.customerPhone != null and clientele.customerPhone != ''">
+                ,customer_phone=#{clientele.customerPhone}
+            </if>
+            <if test="clientele.updatePersonId != null and clientele.updatePersonId != ''">
+                ,update_person_id=#{clientele.updatePersonId}
+            </if>
+            <if test="clientele.updatePersonName != null and clientele.updatePersonName != ''">
+                ,update_person_name=#{clientele.updatePersonName}
+            </if>
+            <if test="clientele.customerType != null and clientele.customerType != ''">
+                ,customer_type=#{clientele.customerType}
+            </if>
+        </trim>
+        where id=#{clientele.id}
     </update>
 </mapper>

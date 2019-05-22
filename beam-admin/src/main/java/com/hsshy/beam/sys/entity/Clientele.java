@@ -54,6 +54,12 @@ public class Clientele extends RestEntity<Long> {
     // ip
     @TableField(value = "update_time")
     private Date updateTime;
+
+    @TableField(value = "sales_account")
+    private String salesAccount;
+
+    @TableField(value = "sales_name")
+    private String salesName;
     // 消息
     @TableField(value = "customer_type")
     private String customerType;
