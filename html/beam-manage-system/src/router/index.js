@@ -79,7 +79,12 @@ export default new Router({
                 {
                     path: '/sysclientele',
                     component: resolve => require(['../components/sys/sysclientele.vue'], resolve),
-                    meta: { title: '客户管理' }
+                    meta: { title: '客户信息' }
+                },
+                {
+                    path: '/myclient',
+                    component: resolve => require(['../components/sys/myclient.vue'], resolve),
+                    meta: { title: '我的客户' }
                 }
 
             ]

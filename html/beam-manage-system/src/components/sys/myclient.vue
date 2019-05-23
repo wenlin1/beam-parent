@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-people"></i> 客户信息</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-people"></i> 我的客户</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -11,7 +11,6 @@
 
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
-                <el-input style="width: 150px" v-model="req.salesName" placeholder="销售人"></el-input>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
@@ -32,10 +31,10 @@
                 </el-table-column>
                 <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
-               <!-- <el-table-column label="修改时间" align="center" prop="updateTime">-->
-              <!--  </el-table-column>-->
+                <!-- <el-table-column label="修改时间" align="center" prop="updateTime">-->
+                <!--  </el-table-column>-->
                 <el-table-column label="客户类型" align="center" prop="customerType">
-                   <template slot-scope="scope">
+                    <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
                         <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
                     </template>
@@ -75,9 +74,9 @@
                     <el-input v-model="clientele.customerPhone"></el-input>
                 </el-form-item>
                 <el-form-item  label="销售人" prop="salesName">
-                  <!--  <dropdown :item-click="dropDownClick" :isNeedSearch="true" :itemlist="itemlist"></dropdown>-->
-                   <!-- <el-input v-model="clientele.salesName"><dropdown :itemlist="itemlist" :placeholder="placeholder"
-                                                                      :nodatatext="nodatatext"></dropdown></el-input>-->
+                    <!--  <dropdown :item-click="dropDownClick" :isNeedSearch="true" :itemlist="itemlist"></dropdown>-->
+                    <!-- <el-input v-model="clientele.salesName"><dropdown :itemlist="itemlist" :placeholder="placeholder"
+                                                                       :nodatatext="nodatatext"></dropdown></el-input>-->
 
 
                 </el-form-item>
@@ -109,9 +108,8 @@
 </template>
 
 <script>
-    import ClienteleApi from '../../api/clientele';
+    import MyClientApi from '../../api/myclient';
     import ElSelectDropdown from "element-ui/packages/select/src/select-dropdown";
-    /*import Dropdown from '@/components/common/dropdown.vue';*/
 
     export default {
         components: {ElSelectDropdown},
@@ -171,65 +169,65 @@
                 // 请求获取筛选列表
 
             },
-                handleCurrentChange(val) {
-                    this.page.pageNo = val;
-                    this.getData();
-                },
-                changePageSize(value) { // 修改每页条数size
-                    this.page.pageNo = 1
-                    this.page.pageSize = value
-                    this.tableData = null
-                    this.getData()
-                },
-                reload() {
-                    this.page.pageNo = 1
-                    this.getData()
-                },
-                // 获取 easy-mock 的模拟数据
-                getData() {
-                    this.loading = true;
-                    this.req.currentPage = this.page.pageNo
-                    this.req.pageSize = this.page.pageSize
-                    ClienteleApi.getData(this.req).then((res) => {
-                        this.loading = false;
-                        if (res.error === false) {
-                            this.tableData = res.data.records ? res.data.records : []
-                            this.page.pageNo = parseInt(res.data.current)
-                            this.page.totalRows = parseInt(res.data.total)
-                            this.tableData.forEach(item => {
-                                item.status = Boolean(item.status)
-                            })
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-                    }, (err) => {
-                        this.loading = false;
-                        this.$message.error(err.msg);
-                    });
-                },
-                search() {
-                    this.is_search = true;
-                    this.getData();
-                },
-                saveEdit() {
-                    this.loading = true
-                    ClienteleApi.save(this.clientele).then((res) => {
-                        this.loading = false
-                        if (res.error === false) {
-                            this.editVisible = false
-                            this.$message.success(res.msg);
-                            this.reload()
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-                    }, (err) => {
-                        this.loading = false
-                        this.$message.error(err.msg);
-                    })
+            handleCurrentChange(val) {
+                this.page.pageNo = val;
+                this.getData();
+            },
+            changePageSize(value) { // 修改每页条数size
+                this.page.pageNo = 1
+                this.page.pageSize = value
+                this.tableData = null
+                this.getData()
+            },
+            reload() {
+                this.page.pageNo = 1
+                this.getData()
+            },
+            // 获取 easy-mock 的模拟数据
+            getData() {
+                this.loading = true;
+                this.req.currentPage = this.page.pageNo
+                this.req.pageSize = this.page.pageSize
+                MyClientApi.getData(this.req).then((res) => {
+                    this.loading = false;
+                    if (res.error === false) {
+                        this.tableData = res.data.records ? res.data.records : []
+                        this.page.pageNo = parseInt(res.data.current)
+                        this.page.totalRows = parseInt(res.data.total)
+                        this.tableData.forEach(item => {
+                            item.status = Boolean(item.status)
+                        })
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.loading = false;
+                    this.$message.error(err.msg);
+                });
+            },
+            search() {
+                this.is_search = true;
+                this.getData();
+            },
+            saveEdit() {
+                this.loading = true
+                MyClientApi.save(this.clientele).then((res) => {
+                    this.loading = false
+                    if (res.error === false) {
+                        this.editVisible = false
+                        this.$message.success(res.msg);
+                        this.reload()
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.loading = false
+                    this.$message.error(err.msg);
+                })
 
-                },
+            },
             deleteRow() {
-                ClienteleApi.batchDelete(this.ids).then((res) => {
+                MyClientApi.batchDelete(this.ids).then((res) => {
                     if (res.error === false) {
                         this.$message.success(res.msg);
                         this.reload()
@@ -242,24 +240,24 @@
                 })
                 this.delVisible = false;
             },
-                handleAdd() {
-                    this.clientele = {};
-                    this.editVisible = true;
-                },
-                handleDelete(index, row) {
-                    this.ids = [row.id];
-                    this.delVisible = true;
-                },
-                handleEdit(index, row) {
-                    this.idx = index;
-                    const item = this.tableData[index];
-                    this.clientele = item;
-                    this.editVisible=true;
-
-                },
-                //计算属性
+            handleAdd() {
+                this.clientele = {};
+                this.editVisible = true;
+            },
+            handleDelete(index, row) {
+                this.ids = [row.id];
+                this.delVisible = true;
+            },
+            handleEdit(index, row) {
+                this.idx = index;
+                const item = this.tableData[index];
+                this.clientele = item;
+                this.editVisible=true;
 
             },
+            //计算属性
+
+        },
 
     }
 

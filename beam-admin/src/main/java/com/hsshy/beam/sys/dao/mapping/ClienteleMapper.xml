@@ -46,6 +46,9 @@
         <if test="clientele.salesName != null and clientele.salesName != ''">
             and a.sales_name=#{clientele.salesName}
         </if>
+        <if test="clientele.salesAccount != null and clientele.salesAccount != ''">
+            and a.sales_account=#{clientele.salesAccount}
+        </if>
         ORDER BY a.`create_time` desc
     </select>
     <!--保存客户信息-->
