@@ -49,6 +49,27 @@
         <if test="clientele.salesAccount != null and clientele.salesAccount != ''">
             and a.sales_account=#{clientele.salesAccount}
         </if>
+        <if test="clientele.customerType != null and clientele.customerType != ''">
+            and a.customer_type=#{clientele.customerType}
+        </if>
+        ORDER BY a.`create_time` desc
+    </select>
+    <select id="selectMyPageList"  resultType="com.hsshy.beam.sys.entity.Clientele">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_clientele a
+        WHERE a.is_delete = 0
+        and (a.sales_name IS NULL or  a.sales_name="")
+        and (a.sales_account IS NULL  or  a.sales_account="")
+        <if test="clientele.customerStoreName != null and clientele.customerStoreName != ''">
+            and a.customer_store_name=#{clientele.customerStoreName}
+        </if>
+        <if test="clientele.customerPhone != null and clientele.customerPhone != ''">
+            and a.customer_phone=#{clientele.customerPhone}
+        </if>
+        <if test="clientele.customerType != null and clientele.customerType != ''">
+            and a.customer_type=#{clientele.customerType}
+        </if>
         ORDER BY a.`create_time` desc
     </select>
     <!--保存客户信息-->
@@ -89,5 +110,11 @@
             </if>
         </trim>
         where id=#{clientele.id}
+    </update>
+    <update id="addMyClient" parameterType="HashMap">
+        UPDATE sys_clientele  SET sales_account=#{salesAccount},sales_name=#{salesName} WHERE id=#{id}
+    </update>
+    <update id="deleteMyClient" parameterType="HashMap">
+        UPDATE sys_clientele  SET sales_account="",sales_name="" WHERE id=#{id}
     </update>
 </mapper>

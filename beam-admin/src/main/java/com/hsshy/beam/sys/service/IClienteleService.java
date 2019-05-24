@@ -8,10 +8,15 @@ import com.hsshy.beam.sys.entity.Clientele;
 public interface IClienteleService extends IService<Clientele> {
     IPage<Clientele> selectPageList(Clientele clientele);
 
+    IPage<Clientele> selectMyPageList(Clientele clientele);
+
     R saveClientele(Clientele clientele);
 
     R deleteClientele(Long ids[]);
 
     R updateClientele(Long ids[]);
+
+    R addMyClient(Long ids[]);
+    R deleteMyClient(Long ids[]);
 
 }

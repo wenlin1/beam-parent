@@ -12,6 +12,14 @@
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
                 <el-input style="width: 150px" v-model="req.salesName" placeholder="销售人"></el-input>
+                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型">
+                    <el-option
+                        v-for="item in customerType"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
@@ -132,6 +140,7 @@
                 accountInput: true,
                 loading: false,
                 customerType:[
+                    {value:'',name:"全部"},
                     {value:1,name:"普通客户"},
                     {value:2,name:"重点客户"}
                 ],

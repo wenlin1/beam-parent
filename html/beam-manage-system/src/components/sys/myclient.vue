@@ -11,8 +11,16 @@
 
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
+                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型">
+                    <el-option
+                        v-for="item in customerType"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
+                <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">添加我的客户</el-button>
             </div>
 
             <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
@@ -41,9 +49,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">释放</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -62,39 +68,52 @@
 
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="clientele" :model="clientele" label-width="100px">
-                <el-form-item label="客户店名"  prop="customerStoreName">
-                    <el-input  v-model="clientele.customerStoreName"></el-input>
-                </el-form-item>
-                <el-form-item label="联系人姓名" prop="customerContactName">
-                    <el-input v-model="clientele.customerContactName"></el-input>
-                </el-form-item>
-                <el-form-item  label="联系人电话" prop="customerPhone">
-                    <el-input v-model="clientele.customerPhone"></el-input>
-                </el-form-item>
-                <el-form-item  label="销售人" prop="salesName">
-                    <!--  <dropdown :item-click="dropDownClick" :isNeedSearch="true" :itemlist="itemlist"></dropdown>-->
-                    <!-- <el-input v-model="clientele.salesName"><dropdown :itemlist="itemlist" :placeholder="placeholder"
-                                                                       :nodatatext="nodatatext"></dropdown></el-input>-->
+        <el-dialog title="客户信息" :visible.sync="editVisible" width="60%">
+            <div class="handle-box">
+                <el-input style="width: 150px" v-model="myReq.customerStoreName" placeholder="客户店名"></el-input>
+                <el-input style="width: 150px" v-model="myReq.customerPhone" placeholder="联系人电话号码"></el-input>
+                <el-select style="width: 100px" v-model="myReq.customerType" placeholder="客户类型">
+                    <el-option
+                        v-for="item in customerType"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-button type="primary" icon="search" @click="mySearch">搜索</el-button>
+                <el-button type="primary" icon="search" @click="addMyClient">导入</el-button>
+            </div>
+              <el-table :data="tableClinetData" v-loading="myLoading" border class="table" ref="multipleTable"  @selection-change="handleMySelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="客户店名" align="center" prop="customerStoreName"></el-table-column>
+                <el-table-column label="联系人姓名" align="center" prop="customerContactName"></el-table-column>
+                <el-table-column label="联系人电话" align="center" prop="customerPhone"></el-table-column>
+                  <el-table-column label="客户类型" align="center" prop="customerType">
+                      <template slot-scope="scope">
+                          <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
+                          <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
+                      </template>
+                  </el-table-column>
+                <el-table-column label="销售人" align="center" prop="salesName">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.salesName == ''">--</span>
+                        <span v-else>{{scope.row.salesName}}</span>
+                    </template>
+                </el-table-column>
 
-
-                </el-form-item>
-                <el-form-item label="客户类型" prop="customerType">
-                    <el-select v-model="clientele.customerType" placeholder="请选择">
-                        <el-option
-                            v-for="item in customerType"
-                            :key="item.value"
-                            :label="item.name"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" :loading="loading" @click="saveEdit">确 定</el-button>
-            </span>
+            </el-table>
+            <div class="mypagination">
+                <el-pagination
+                    background
+                    :page-sizes="[10, 20, 30, 40, 50]"
+                    :page-size="myPage.pageSize"
+                    :current-page="myPage.pageNo"
+                    @current-change="handleCurrentMyChange"
+                    @size-change="changeMyPageSize"
+                    layout="prev, pager, next"
+                    :total="myPage.totalRows">
+                </el-pagination>
+            </div>
         </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
@@ -118,18 +137,27 @@
             return {
                 configMenuDialog:false,
                 tableData: [],
+                tableClinetData: [],
                 page: {pageNo: 1, pageSize: 10},
+                myPage: {pageNo: 1, pageSize: 10},
                 multipleSelection: [],
+                multipleMySelection: [],
                 is_search: false,
+                is_mySearch:false,
                 editVisible: false,
                 delVisible: false,
+                addVisible: false,
                 clientele: {},
                 idx: -1,
                 ids: [],
+                addIds:[],
                 req: {},
+                myReq:{},
                 accountInput: true,
                 loading: false,
+                myLoading: false,
                 customerType:[
+                    {value:'',name:"全部"},
                     {value:1,name:"普通客户"},
                     {value:2,name:"重点客户"}
                 ],
@@ -148,6 +176,9 @@
         },
         created() {
             this.getData();
+        },
+        myCreated(){
+            this.getMyData();
         },
         computed: {
             changeRemarkLength() {
@@ -227,7 +258,7 @@
 
             },
             deleteRow() {
-                MyClientApi.batchDelete(this.ids).then((res) => {
+                MyClientApi.deleteMyClient(this.ids).then((res) => {
                     if (res.error === false) {
                         this.$message.success(res.msg);
                         this.reload()
@@ -243,6 +274,7 @@
             handleAdd() {
                 this.clientele = {};
                 this.editVisible = true;
+                this.getMyData();
             },
             handleDelete(index, row) {
                 this.ids = [row.id];
@@ -255,7 +287,70 @@
                 this.editVisible=true;
 
             },
-            //计算属性
+            //
+            handleCurrentMyChange(val) {
+                this.myPage.pageNo = val;
+                this.getMyData();
+            },
+            changeMyPageSize(value) { // 修改每页条数size
+                this.myPage.pageNo = 1
+                this.myPage.pageSize = value
+                this.tableClinetData = null
+                this.getMyData()
+            },
+            getMyData() {
+                this.myLoading = true;
+                this.myReq.currentPage = this.myPage.pageNo
+                this.myReq.pageSize = this.myPage.pageSize
+                MyClientApi.getMyData(this.myReq).then((res) => {
+                    this.myLoading = false;
+                    if (res.error === false) {
+                        this.tableClinetData = res.data.records ? res.data.records : []
+                        this.myPage.pageNo = parseInt(res.data.current)
+                        this.myPage.totalRows = parseInt(res.data.total)
+                        this.tableClinetData.forEach(item => {
+                            item.status = Boolean(item.status)
+                        })
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.tableClinetData = false;
+                    this.$message.error(err.msg);
+                });
+            },
+            myReload() {
+                this.myPage.pageNo = 1
+                this.getMyData()
+            },
+            mySearch() {
+                this.is_mySearch = true;
+                this.getMyData();
+            },
+            addMyClient() {
+                this.addVisible = true;
+                this.addIds = [];
+                const length = this.multipleMySelection.length;
+                for (let i = 0; i < length; i++) {
+                    this.addIds.push(this.multipleMySelection[i].id);
+                }
+                MyClientApi.addMyClient(this.addIds).then((res) => {
+                    if (res.error === false) {
+                        this.$message.success(res.msg);
+                        this.myReload();
+                        this.reload()
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+
+                }, (err) => {
+                    this.$message.error(err.msg);
+                })
+                this.delVisible = false;
+            },
+            handleMySelectionChange(val) {
+                this.multipleMySelection = val;
+            },
 
         },
 

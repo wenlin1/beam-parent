@@ -29,6 +29,21 @@ public class MyClientController extends BaseController {
         return  R.ok(clienteleService.selectPageList(clientele));
     }
 
+    /**
+     * 查询可导入我的客户
+     * @param clientele
+     * @returnmy
+     */
+    @RequiresPermissions("sys:myclient:mylist")
+    @ApiOperation(value = "可导入我的客户分页列表")
+    @GetMapping(value = "/page/mylist")
+    public Object pagemyList(Clientele clientele)  {
+        if(ShiroUtils.getUserId().longValue()!= Constant.SUPER_ADMIN){
+            clientele.setSalesAccount(ShiroUtils.getUserEntity().getAccount());
+        }
+        return  R.ok(clienteleService.selectMyPageList(clientele));
+    }
+
     @ApiOperation("保存用户")
     @PostMapping(value = "/save")
     @RequiresPermissions("sys:myclient:save")
@@ -37,10 +52,18 @@ public class MyClientController extends BaseController {
         return R.ok();
     }
 
-    @RequiresPermissions("sys:myclient:del")
-    @ApiOperation("批量删除用户")
-    @PostMapping(value = "/delete")
-    public Object delete(@RequestBody Long ids[]){
-        return clienteleService.deleteClientele(ids);
+    @ApiOperation("导入我的客户")
+    @PostMapping(value = "/addMyClient")
+    @RequiresPermissions("sys:myclient:addMyClient")
+    public Object addMyClient(@RequestBody Long addIds[]){
+        clienteleService.addMyClient(addIds);
+        return R.ok();
+    }
+
+    @RequiresPermissions("sys:myclient:deleteMyClient")
+    @ApiOperation("删除我的客户")
+    @PostMapping(value = "/deleteMyClient")
+    public Object deleteMyClient(@RequestBody Long ids[]){
+        return clienteleService.deleteMyClient(ids);
     }
 }
