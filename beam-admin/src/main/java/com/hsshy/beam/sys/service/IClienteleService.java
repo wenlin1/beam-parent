@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hsshy.beam.common.utils.R;
 import com.hsshy.beam.sys.entity.Clientele;
 
+import java.util.List;
+
 public interface IClienteleService extends IService<Clientele> {
     IPage<Clientele> selectPageList(Clientele clientele);
 
@@ -18,5 +20,6 @@ public interface IClienteleService extends IService<Clientele> {
 
     R addMyClient(Long ids[]);
     R deleteMyClient(Long ids[]);
+    List<Clientele> clinetList();
 
 }

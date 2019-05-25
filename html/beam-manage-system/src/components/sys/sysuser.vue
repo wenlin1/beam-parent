@@ -368,6 +368,7 @@
 
             handleAdd() {
                 this.form = {};
+                this.getRoleList();
                 this.editVisible = true;
                 this.accountInput = false;
                 this.form.status = true;

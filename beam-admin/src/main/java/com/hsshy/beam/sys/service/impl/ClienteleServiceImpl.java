@@ -13,6 +13,7 @@ import com.hsshy.beam.sys.service.IClienteleService;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -92,5 +93,13 @@ public class ClienteleServiceImpl extends ServiceImpl<ClienteleMapper, Clientele
             params.clear();
         }
         return R.ok();
+    }
+
+    @Override
+    public List<Clientele> clinetList() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        return baseMapper.clientList(params);
     }
 }

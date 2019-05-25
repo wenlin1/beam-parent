@@ -15,27 +15,21 @@
                 </el-card>
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                        <img src="https://upload-images.jianshu.io/upload_images/13498144-91430607dc93da79.png" class="user-avator" alt="">
                         <div class="user-info-cont">
-                            <div class="user-info-name">微信小程序</div>
-                            <div>个人开发的微信小程序，里面有图片文字识别、动植物识别、车型识别、二维码生成解析、手写板等工具</div>
+                            <div class="user-info-name">我的主页</div>
                         </div>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
+                        <span>我的邮件</span>
                     </div>
-                    Vue
+                    QQ邮件
                     <el-progress :percentage="30.3" color="#42b983"></el-progress>
-                    JavaScript
+                    网易
                     <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
-                    CSS
+                    360
                     <el-progress :percentage="30.7"></el-progress>
-                    HTML
-                    <el-progress :percentage="30.9" color="#f56c6c"></el-progress>
-                    Java
-                    <el-progress :percentage="70.9" color="#f56c6c"></el-progress>
                 </el-card>
 
             </el-col>

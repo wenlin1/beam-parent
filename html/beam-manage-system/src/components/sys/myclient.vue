@@ -94,13 +94,6 @@
                           <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
                       </template>
                   </el-table-column>
-                <el-table-column label="销售人" align="center" prop="salesName">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.salesName == ''">--</span>
-                        <span v-else>{{scope.row.salesName}}</span>
-                    </template>
-                </el-table-column>
-
             </el-table>
             <div class="mypagination">
                 <el-pagination
@@ -157,7 +150,6 @@
                 loading: false,
                 myLoading: false,
                 customerType:[
-                    {value:'',name:"全部"},
                     {value:1,name:"普通客户"},
                     {value:2,name:"重点客户"}
                 ],

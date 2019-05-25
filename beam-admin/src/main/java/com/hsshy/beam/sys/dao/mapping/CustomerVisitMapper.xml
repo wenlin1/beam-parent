@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsshy.beam.sys.dao.CustomerVisitMapper">
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.hsshy.beam.sys.entity.CustomerVisit" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="visitSchedule" column="visit_schedule"/>
+        <result property="visitInfo" column="visit_info"/>
+        <result property="visitType" column="visit_type"/>
+        <result property="resultInfo" column="result_info"/>
+        <result property="amount" column="amount"/>
+        <result property="creatTime" column="creat_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        a.`id` AS "id",
+        a.`user_id` AS "userId",
+        a.`customer_id` AS "customerId",
+        a.`visit_schedule` AS "visitSchedule",
+        a.`visit_info` AS "visitInfo",
+        a.`visit_type` AS "visitType",
+        a.`result_info` AS "resultInfo",
+        a.`amount` AS "amount",
+        a.`creat_time` AS "createTime"
+    </sql>
+
+    <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
+        select
+        <include refid="Base_Column_List"/>
+        from customer_visit a
+    </select>
+    <select id="getByVisitId" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
+        select
+        <include refid="Base_Column_List"/>
+        from customer_visit a
+        where a.id=#{id}
+    </select>
+
+    <insert id="saveVisit">
+        insert into customer_visit (user_id,customer_id, visit_schedule
+        ,visit_info,visit_type,result_info,amount)
+        values( #{customerVisit.userId}, #{customerVisit.customerId},#{customerVisit.visitSchedule},
+        #{customerVisit.visitInfo}, #{customerVisit.visitType},#{customerVisit.resultInfo},#{customerVisit.amount} )
+    </insert>
+</mapper>

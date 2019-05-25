@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019-05-21 18:03:20
  */
 @Api(value="ClienteleController",tags={"客户信息接口"})
-@RequestMapping("/sys/clientele")
+@RequestMapping("/clientele")
 @RestController
 public class ClienteleController  extends BaseController {
     @Autowired
     private IClienteleService clienteleService;
 
-    @RequiresPermissions("sys:clientele:list")
+    @RequiresPermissions("clientele:list")
     @ApiOperation(value = "分页列表")
     @GetMapping(value = "/page/list")
     public Object pageList(Clientele clientele)  {
@@ -34,13 +34,13 @@ public class ClienteleController  extends BaseController {
 
     @ApiOperation("保存用户")
     @PostMapping(value = "/save")
-    @RequiresPermissions("sys:clientele:save")
+    @RequiresPermissions("clientele:save")
     public Object save(@RequestBody Clientele clientele){
       clienteleService.saveClientele(clientele);
       return R.ok();
     }
 
-    @RequiresPermissions("sys:clientele:del")
+    @RequiresPermissions("clientele:del")
     @ApiOperation("批量删除用户")
     @PostMapping(value = "/delete")
     public Object delete(@RequestBody Long ids[]){

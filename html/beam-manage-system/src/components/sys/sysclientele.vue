@@ -12,12 +12,12 @@
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
                 <el-input style="width: 150px" v-model="req.salesName" placeholder="销售人"></el-input>
-                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型">
-                    <el-option
-                        v-for="item in customerType"
-                        :key="item.value"
+                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型" clearable="true">
+                   <el-option
+                        v-for="item in customerTypeList"
+                        :key="item.id"
                         :label="item.name"
-                        :value="item.value">
+                        :value="item.id">
                     </el-option>
                 </el-select>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
@@ -40,8 +40,6 @@
                 </el-table-column>
                 <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
-               <!-- <el-table-column label="修改时间" align="center" prop="updateTime">-->
-              <!--  </el-table-column>-->
                 <el-table-column label="客户类型" align="center" prop="customerType">
                    <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
@@ -82,20 +80,23 @@
                 <el-form-item  label="联系人电话" prop="customerPhone">
                     <el-input v-model="clientele.customerPhone"></el-input>
                 </el-form-item>
-                <el-form-item  label="销售人" prop="salesName">
-                  <!--  <dropdown :item-click="dropDownClick" :isNeedSearch="true" :itemlist="itemlist"></dropdown>-->
-                   <!-- <el-input v-model="clientele.salesName"><dropdown :itemlist="itemlist" :placeholder="placeholder"
-                                                                      :nodatatext="nodatatext"></dropdown></el-input>-->
-
-
+                <el-form-item  label="销售人" prop="salesAccount">
+                    <el-select v-model="form.salesAccount"  placeholder="选择销售人" clearable="ture" filterable="true">
+                        <el-option
+                            v-for="item in salesList"
+                            :key="item.salesAccount"
+                            :label="item.customerStoreName"
+                            :value="item.salesAccount">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="客户类型" prop="customerType">
                     <el-select v-model="clientele.customerType" placeholder="请选择">
                         <el-option
-                            v-for="item in customerType"
-                            :key="item.value"
+                            v-for="item in customerTypeList"
+                            :key="item.id"
                             :label="item.name"
-                            :value="item.value">
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -139,22 +140,18 @@
                 req: {},
                 accountInput: true,
                 loading: false,
-                customerType:[
-                    {value:'',name:"全部"},
-                    {value:1,name:"普通客户"},
-                    {value:2,name:"重点客户"}
-                ],
                 menuTreeData: [],
                 defaultProps: {
                     children: 'children',
                     label: 'name'
                 },
                 checkMenuData:[],
-                itemlist: [],
-                placeholder: "搜索",
-                nodatatext: "暂无数据",
-                selectValue: "",
-                roleId:null
+                roleId:null,
+                customerTypeList:[
+                    {id:1,name:"普通客户"},
+                    {id:2,name:"重点客户"}
+                ],
+                salesList:[]
             }
         },
         created() {

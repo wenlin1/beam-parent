@@ -16,7 +16,10 @@
         <result property="updateTime" column="update_time"/>
         <result property="customerType" column="customer_type"/>
     </resultMap>
-
+    <resultMap type="com.hsshy.beam.sys.entity.Clientele" id="clientResultMap">
+        <result property="id" column="id"/>
+        <result property="customerStoreName" column="customer_store_name"/>
+    </resultMap>
     <sql id="Base_Column_List">
         a.`id` AS "id",
         a.`customer_store_name` AS "customerStoreName",
@@ -117,4 +120,10 @@
     <update id="deleteMyClient" parameterType="HashMap">
         UPDATE sys_clientele  SET sales_account="",sales_name="" WHERE id=#{id}
     </update>
+    <select id="clientList" parameterType="HashMap" resultMap="clientResultMap">
+         select id,
+                customer_store_name
+        FROM sys_clientele
+        WHERE sales_account=#{salesAccount} and sales_name=#{salesName}
+    </select>
 </mapper>

@@ -17,7 +17,7 @@ export default new Router({
                 {
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
-                    meta: { title: '系统首页' }
+                    meta: { title: '首页' }
                 },
                 {
                     // 权限页面
@@ -77,7 +77,7 @@ export default new Router({
                     meta: { title: '业务日志' }
                 },
                 {
-                    path: '/sysclientele',
+                    path: '/clientele',
                     component: resolve => require(['../components/sys/sysclientele.vue'], resolve),
                     meta: { title: '客户信息' }
                 },
@@ -85,6 +85,11 @@ export default new Router({
                     path: '/myclient',
                     component: resolve => require(['../components/sys/myclient.vue'], resolve),
                     meta: { title: '我的客户' }
+                },
+                {
+                    path: '/customerVisit',
+                    component: resolve => require(['../components/sys/customerVisit.vue'], resolve),
+                    meta: { title: '客户拜访' }
                 }
 
             ]

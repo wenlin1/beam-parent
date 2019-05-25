@@ -12,14 +12,17 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Api(value="MyClientController",tags={"我的客户接口"})
-@RequestMapping("/sys/myclient")
+@RequestMapping("/myclient")
 @RestController
 public class MyClientController extends BaseController {
     @Autowired
     private IClienteleService clienteleService;
 
-    @RequiresPermissions("sys:myclient:list")
+    @RequiresPermissions("myclient:list")
     @ApiOperation(value = "分页列表")
     @GetMapping(value = "/page/list")
     public Object pageList(Clientele clientele)  {
@@ -34,7 +37,7 @@ public class MyClientController extends BaseController {
      * @param clientele
      * @returnmy
      */
-    @RequiresPermissions("sys:myclient:mylist")
+    @RequiresPermissions("myclient:mylist")
     @ApiOperation(value = "可导入我的客户分页列表")
     @GetMapping(value = "/page/mylist")
     public Object pagemyList(Clientele clientele)  {
@@ -46,7 +49,7 @@ public class MyClientController extends BaseController {
 
     @ApiOperation("保存用户")
     @PostMapping(value = "/save")
-    @RequiresPermissions("sys:myclient:save")
+    @RequiresPermissions("myclient:save")
     public Object save(@RequestBody Clientele clientele){
         clienteleService.saveClientele(clientele);
         return R.ok();
@@ -54,16 +57,22 @@ public class MyClientController extends BaseController {
 
     @ApiOperation("导入我的客户")
     @PostMapping(value = "/addMyClient")
-    @RequiresPermissions("sys:myclient:addMyClient")
+    @RequiresPermissions("myclient:addMyClient")
     public Object addMyClient(@RequestBody Long addIds[]){
         clienteleService.addMyClient(addIds);
         return R.ok();
     }
 
-    @RequiresPermissions("sys:myclient:deleteMyClient")
+    @RequiresPermissions("myclient:deleteMyClient")
     @ApiOperation("删除我的客户")
     @PostMapping(value = "/deleteMyClient")
     public Object deleteMyClient(@RequestBody Long ids[]){
         return clienteleService.deleteMyClient(ids);
+    }
+
+    @ApiOperation(value = "获取我的客户分页列表")
+    @GetMapping(value = "/getClinetlist")
+    public Object clinetList(Clientele clientele)  {
+        return  R.ok(clienteleService.clinetList());
     }
 }
