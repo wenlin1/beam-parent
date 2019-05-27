@@ -33,6 +33,7 @@
         a.`update_time` AS "updateTime",
         a.`sales_account` AS "salesAccount",
         a.`sales_name` AS "salesName",
+        a.customer_tag AS "customerTag",
         a.`customer_type` AS "customerType"
     </sql>
     <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.Clientele">
@@ -54,6 +55,9 @@
         </if>
         <if test="clientele.customerType != null and clientele.customerType != ''">
             and a.customer_type=#{clientele.customerType}
+        </if>
+        <if test="clientele.customerTag != null and clientele.customerTag != ''">
+            and a.customer_tag=#{clientele.customerTag}
         </if>
         ORDER BY a.`create_time` desc
     </select>
@@ -111,19 +115,41 @@
             <if test="clientele.customerType != null and clientele.customerType != ''">
                 ,customer_type=#{clientele.customerType}
             </if>
+            <if test="clientele.customerTag != null and clientele.customerTag != ''">
+                ,customer_tag=#{clientele.customerTag}
+            </if>
+
         </trim>
         where id=#{clientele.id}
     </update>
     <update id="addMyClient" parameterType="HashMap">
         UPDATE sys_clientele  SET sales_account=#{salesAccount},sales_name=#{salesName} WHERE id=#{id}
     </update>
+    <update id="updateClienteleStatus" parameterType="HashMap">
+         UPDATE sys_clientele  SET customer_tag=#{customerTag} WHERE id=#{id}
+    </update>
     <update id="deleteMyClient" parameterType="HashMap">
-        UPDATE sys_clientele  SET sales_account="",sales_name="" WHERE id=#{id}
+        UPDATE sys_clientele  SET sales_account="",sales_name="",customer_tag=1 WHERE id=#{id}
     </update>
     <select id="clientList" parameterType="HashMap" resultMap="clientResultMap">
          select id,
                 customer_store_name
         FROM sys_clientele
         WHERE sales_account=#{salesAccount} and sales_name=#{salesName}
+    </select>
+    <select id="getCustomerTotal" resultType="Long"  parameterType="HashMap">
+        select
+        count(1)
+        from sys_clientele a
+        WHERE a.is_delete = 0
+        <if test="salesAccount != null and salesAccount != ''">
+            and sales_account=#{salesAccount}
+        </if>
+        <if test="salesName != null and salesName != ''">
+            and sales_name=#{salesName}
+        </if>
+        <if test="customerTag != null and customerTag!= ''">
+            and customer_tag=#{customerTag}
+        </if>
     </select>
 </mapper>

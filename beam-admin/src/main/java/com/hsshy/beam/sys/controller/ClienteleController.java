@@ -3,6 +3,7 @@ package com.hsshy.beam.sys.controller;
 import com.hsshy.beam.common.base.controller.BaseController;
 import com.hsshy.beam.common.utils.R;
 import com.hsshy.beam.sys.entity.Clientele;
+import com.hsshy.beam.sys.entity.CommEntity;
 import com.hsshy.beam.sys.entity.User;
 import com.hsshy.beam.sys.service.IClienteleService;
 import io.swagger.annotations.Api;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 /**
  * 客户管理表
@@ -45,5 +48,35 @@ public class ClienteleController  extends BaseController {
     @PostMapping(value = "/delete")
     public Object delete(@RequestBody Long ids[]){
         return clienteleService.deleteClientele(ids);
+    }
+
+    @ApiOperation("总客户数")
+    @GetMapping(value = "/getCustomerTotal")
+    public R getCustomerTotal(Clientele clientele){
+        CommEntity commEntity=new CommEntity();
+       long total=clienteleService.getCustomerTotal();
+       long myTotal=clienteleService.getMyCustomerTotal();
+       long count=clienteleService.getCount();
+       long viewTotal=clienteleService.getViewCount();
+       long intentionCount=clienteleService.getIntentionCount();
+       long signingCount=clienteleService.getSigningCount();
+        commEntity.setTotal(total);
+        commEntity.setMyTotal(myTotal);
+        commEntity.setCount(count);
+        double number1=((double) count/(double)myTotal)*(double) 100;
+        double number2=((double) viewTotal/(double)myTotal)*(double) 100;
+        double number3=((double) intentionCount/(double)myTotal)*(double) 100;
+        double number4=((double) signingCount/(double)myTotal)*(double) 100;
+        commEntity.setUnknownRate(getTwo(number1));
+        commEntity.setViewRate(getTwo(number2));
+        commEntity.setIntentionRate(getTwo(number3));
+        commEntity.setContractRate(getTwo(number4));
+
+        return R.ok(commEntity);
+    }
+    public static double getTwo(double var){
+        BigDecimal b = new BigDecimal(var);
+        double df = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return df;
     }
 }

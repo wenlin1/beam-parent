@@ -38,6 +38,17 @@
                 </el-table-column>
                 <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
+                <el-table-column label="客户状态" align="center" prop="customerTag"
+                                 :filters="[{ text: '未知', value: 1 },{ text: '拜访', value: 2 },{ text: '意向', value: 3 }, { text: '签约', value: 4 }]"
+                                 :filter-method="filterTag"
+                                 filter-placement="bottom-end">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.customerTag === 1 ? 'primary' : 'success'"
+                            disable-transitions>  {{changeTagLength(scope.row.customerTag)}}</el-tag>
+                    </template>
+
+                </el-table-column>
                 <el-table-column label="客户类型" align="center" prop="customerType">
                    <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
@@ -91,6 +102,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+
                 <el-form-item label="客户类型" prop="customerType">
                     <el-select v-model="clientele.customerType" placeholder="请选择">
                         <el-option
@@ -169,8 +181,26 @@
                     }
                 }
             },
+            changeTagLength() {
+                return function (text) {
+                    if (text == "1") {
+                        return '未知'
+                    } else if (text =="2") {
+                        return '拜访'
+                    }else if (text =="3") {
+                        return '意向'
+                    }else if (text =="4") {
+                        return '签约'
+                    }else if (text =="5") {
+                        return '完成'
+                    }
+                }
+            },
         },
         methods: {
+            filterTag(value, row) {
+                return row.customerTag === value;
+            },
             getUserList() {
                 ClienteleApi.getUser().then((res) => {
                     if (res.error === false) {

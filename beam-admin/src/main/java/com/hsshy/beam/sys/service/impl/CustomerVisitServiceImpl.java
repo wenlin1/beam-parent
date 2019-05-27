@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 public class CustomerVisitServiceImpl  extends ServiceImpl<CustomerVisitMapper, CustomerVisit> implements ICustomerVisitService {
     @Override
     public IPage<CustomerVisit> selectPageList(CustomerVisit customerVisit) {
+        if(ToolUtil.isNotEmpty(ShiroUtils.getUserEntity().getId())) {
+            customerVisit.setUserId(ShiroUtils.getUserEntity().getId());
+        }
         return baseMapper.selectPageList(new Page(customerVisit.getCurrentPage(),customerVisit.getPageSize()),customerVisit);
     }
 
@@ -24,7 +27,11 @@ public class CustomerVisitServiceImpl  extends ServiceImpl<CustomerVisitMapper, 
         if(ToolUtil.isNotEmpty(ShiroUtils.getUserEntity().getId())) {
             customerVisit.setUserId(ShiroUtils.getUserEntity().getId());
         }
-        baseMapper.saveVisit(customerVisit);
+        if(ToolUtil.isNotEmpty(customerVisit.getId())){
+            baseMapper.updateVisit(customerVisit);
+        }else {
+            baseMapper.saveVisit(customerVisit);
+        }
         return R.ok();
     }
 

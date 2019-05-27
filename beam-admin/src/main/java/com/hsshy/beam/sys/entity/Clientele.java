@@ -62,6 +62,8 @@ public class Clientele extends RestEntity<Long> {
 
     @TableField(value = "sales_name")
     private String salesName;
+    @TableField(value = "customer_tag")
+    private int customerTag;
     // 消息
     @TableField(value = "customer_type")
     private String customerType;

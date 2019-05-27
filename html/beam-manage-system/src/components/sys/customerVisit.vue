@@ -13,7 +13,7 @@
                         <el-input style="width: 120px" v-model="req.customerStoreName" placeholder="客户名称"></el-input>
                         <el-input style="width: 120px" v-model="req.visitType" placeholder="标签"></el-input>
                         <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                        <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增用户</el-button>
+                        <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增拜访记录</el-button>
                     </el-header>
                     <el-main>
                         <el-table :data="tableData" v-loading="loading" border class="table" ref="multipleTable"
@@ -29,10 +29,16 @@
                             </el-table-column>
                             <el-table-column label="拜访结果" align="center" prop="resultInfo">
                             </el-table-column>
-                            <el-table-column label="拜访标签" align="center" prop="visitType">
+                            <el-table-column label="拜访标签" align="center" prop="visitType"
+                                             :filters="[{ text: '意向', value: 3 }, { text: '签约', value: 4 }]"
+                                             :filter-method="filterTag"
+                                             filter-placement="bottom-end">
                                 <template slot-scope="scope">
-                                   {{changeRemarkLength(scope.row.visitType)}}
+                                    <el-tag
+                                        :type="scope.row.visitType === '意向' ? 'primary' : 'success'"
+                                        disable-transitions>  {{changeRemarkLength(scope.row.visitType)}}</el-tag>
                                 </template>
+
                             </el-table-column>
                             <el-table-column label="签约金额" align="center" prop="amount">
                             </el-table-column>
@@ -189,11 +195,10 @@
                     label: 'name'
                 },
                 customerList:[],
-                typeList:[{id:1,typeName:"未知"},
+                typeList:[
                     {id:2,typeName:"拜访"},
                     {id:3,typeName:"意向"},
-                    {id:4,typeName:"签约"},
-                    {id:5,typeName:"完成"}],
+                    {id:4,typeName:"签约"}],
                 isShow:false,
             }
 
@@ -204,17 +209,13 @@
         computed: {
             changeRemarkLength() {
                 return function (text) {
-                    if (text == "1") {
-                        return '未知'
-                    } else if (text =="2") {
+                    if (text =="2") {
                         return '拜访'
                     }else if (text =="3") {
                         return '意向'
                     }else if (text =="4") {
-                        return '签约'
-                    }else if (text =="5") {
-                        return '完成'
-                    }
+                      return '签约'
+                  }
                 }
             },
         },
@@ -225,6 +226,9 @@
                 }else{
                     this.isShow=true;
                 }
+            },
+            filterTag(value, row) {
+                return row.visitType === value;
             },
             getRoleList() {
                 CustomerVisitApi.getClinetlist().then((res) => {

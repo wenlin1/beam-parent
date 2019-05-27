@@ -31,11 +31,12 @@
         select
         <include refid="Base_Column_List"/>
         from customer_visit a left join sys_clientele b on a.customer_id=b.id
+        where a.user_id=#{customerVisit.userId}
     </select>
     <select id="getByVisitId" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
         select
         <include refid="Base_Column_List"/>
-        from customer_visit a
+        from customer_visit a  left join sys_clientele b on a.customer_id=b.id
         where a.id=#{id}
     </select>
 
@@ -45,4 +46,30 @@
         values( #{customerVisit.userId}, #{customerVisit.customerId},#{customerVisit.visitSchedule},
         #{customerVisit.visitInfo}, #{customerVisit.visitType},#{customerVisit.resultInfo},#{customerVisit.amount} )
     </insert>
+
+    <update id="updateVisit">
+        update customer_visit
+        <trim prefix="SET" prefixOverrides=",">
+            user_id=#{customerVisit.userId}
+            <if test="customerVisit.customerId != null and customerVisit.customerId != ''">
+                ,customer_id=#{customerVisit.customerId}
+            </if>
+            <if test="customerVisit.visitSchedule != null and customerVisit.visitSchedule != ''">
+                 ,visit_schedule=#{customerVisit.visitSchedule}
+            </if>
+            <if test="customerVisit.visitInfo != null and customerVisit.visitInfo != ''">
+                ,visit_info=#{customerVisit.visitInfo}
+            </if>
+            <if test="customerVisit.visitType != null and customerVisit.visitType != ''">
+                ,visit_type=#{customerVisit.visitType}
+            </if>
+            <if test="customerVisit.resultInfo != null and customerVisit.resultInfo != ''">
+                ,result_info=#{customerVisit.resultInfo}
+            </if>
+            <if test="customerVisit.amount != null and customerVisit.amount != ''">
+                ,amount=#{customerVisit.amount}
+            </if>
+        </trim>
+        where id=#{customerVisit.id}
+    </update>
 </mapper>

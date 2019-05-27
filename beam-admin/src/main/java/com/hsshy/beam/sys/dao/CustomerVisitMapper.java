@@ -9,5 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface CustomerVisitMapper  extends BaseMapper<CustomerVisit> {
     IPage<CustomerVisit> selectPageList(Page page, @Param("customerVisit") CustomerVisit customerVisit);
     void saveVisit(@Param("customerVisit") CustomerVisit customerVisit);
+
+    void updateVisit(@Param("customerVisit") CustomerVisit customerVisit);
+
     CustomerVisit getByVisitId(long id);
 }

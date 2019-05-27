@@ -8,6 +8,7 @@ import com.hsshy.beam.common.utils.ToolUtil;
 import com.hsshy.beam.sys.entity.CustomerVisit;
 import com.hsshy.beam.sys.entity.Dept;
 import com.hsshy.beam.sys.entity.User;
+import com.hsshy.beam.sys.service.IClienteleService;
 import com.hsshy.beam.sys.service.ICustomerVisitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Api(value="CustomerVisitContoller",tags={"客户拜访信息接口"})
@@ -23,6 +25,8 @@ import java.util.List;
 public class CustomerVisitContoller   extends BaseController {
     @Autowired
     private ICustomerVisitService customerVisitService;
+    @Autowired
+    private IClienteleService clienteleService;
 
     @RequiresPermissions("customerVisit:list")
     @ApiOperation(value = "分页列表")
@@ -36,7 +40,19 @@ public class CustomerVisitContoller   extends BaseController {
     @PostMapping(value = "/save")
     @RequiresPermissions("customerVisit:save")
     public Object save(@RequestBody CustomerVisit customerVisit){
+        HashMap<String,Object> params=new HashMap<>();
+        if(customerVisit.getId()!=null){
+            params.put("customerTag",customerVisit.getVisitType());
+
+        }else{
+            params.put("customerTag",2);
+            if(customerVisit.getVisitType()==0) {
+                customerVisit.setVisitType(2);
+            }
+        }
+        params.put("id",customerVisit.getCustomerId());
         customerVisitService.saveVisit(customerVisit);
+        clienteleService.updateClienteleStatus(params);
         return R.ok();
     }
     @ApiOperation("用户详情")

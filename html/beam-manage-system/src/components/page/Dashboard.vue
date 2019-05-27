@@ -13,35 +13,34 @@
                     <div class="user-info-list">真实姓名：<span>{{sysuser.name}}</span></div>
                     <div class="user-info-list">所在部门：<span>{{sysuser.deptName}}</span></div>
                 </el-card>
-                <el-card shadow="hover" class="mgb20" style="height:252px;">
-                    <div class="user-info">
-                        <div class="user-info-cont">
-                            <div class="user-info-name">我的主页</div>
-                        </div>
-                    </div>
-                </el-card>
-                <el-card shadow="hover" style="height:252px;">
+                <el-card shadow="hover" style="height:400px;">
                     <div slot="header" class="clearfix">
-                        <span>我的邮件</span>
+                        <span>客户状态百分比</span>
                     </div>
-                    QQ邮件
-                    <el-progress :percentage="30.3" color="#42b983"></el-progress>
-                    网易
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
-                    360
-                    <el-progress :percentage="30.7"></el-progress>
+                    客户未知
+                    <el-progress :percentage="CommEntity.unknownRate" color="#42b983"></el-progress>
+                    <br/> <br/>
+                    客户拜访
+                    <el-progress :percentage="CommEntity.viewRate" color="#42b983"></el-progress>
+                    <br/> <br/>
+                    客户意向
+                    <el-progress :percentage="CommEntity.intentionRate" color="#f1e05a"></el-progress>
+                    <br/> <br/>
+                    客户签约
+                    <el-progress :percentage="CommEntity.contractRate"></el-progress>
                 </el-card>
 
             </el-col>
             <el-col :span="16">
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
+
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
+                                    <div class="grid-num">{{CommEntity.count}}</div>
+                                    <div>未拜访客户</div>
                                 </div>
                             </div>
                         </el-card>
@@ -49,10 +48,10 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
+                                <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
+                                    <div class="grid-num">{{CommEntity.myTotal}}</div>
+                                    <div>我的客户</div>
                                 </div>
                             </div>
                         </el-card>
@@ -60,40 +59,41 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
+                                <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
+                                    <div class="grid-num">{{CommEntity.total}}</div>
+                                    <div>总客户数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-card shadow="hover" style="height:403px;">
+                <el-card shadow="hover" style="height:600px;">
                     <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+                        <span>待拜访客户</span>
                     </div>
-                    <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
+                    <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
+                        <el-table-column  label="客户ID" align="center" prop="id" v-if="show">
                         </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
-                                    {{scope.row.title}}
-                                </div>
-                            </template>
+                        <el-table-column label="客户店名" align="center" prop="customerStoreName">
                         </el-table-column>
-                        <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
+                        <el-table-column label="联系人姓名" align="center" prop="customerContactName">
+                        </el-table-column>
+                        <el-table-column label="联系人电话" align="center" prop="customerPhone">
                         </el-table-column>
                     </el-table>
+                    <div class="pagination">
+                        <el-pagination
+                            background
+                            :page-sizes="[10, 20, 30, 40, 50]"
+                            :page-size="page.pageSize"
+                            :current-page="page.pageNo"
+                            @current-change="handleCurrentChange"
+                            @size-change="changePageSize"
+                            layout="prev, pager, next"
+                            :total="page.totalRows">
+                        </el-pagination>
+                    </div>
                 </el-card>
             </el-col>
 
@@ -112,32 +112,13 @@
         name: 'dashboard',
         data() {
             return {
-
                 user : null,
-                todoList: [{
-                        title: '客户拜访1',
-                        status: false,
-                    },
-                    {
-                        title: '客户拜访2',
-                        status: false,
-                    },
-                    {
-                        title: '客户拜访3',
-                        status: false,
-                    }, {
-                        title: '客户拜访4',
-                        status: false,
-                    },
-                    {
-                        title: '客户拜访5',
-                        status: true,
-                    },
-                    {
-                        title: '客户拜访6',
-                        status: true,
-                    }
-                ],
+                CommEntity:null,
+                tableData: [],
+                page: {pageNo: 1, pageSize: 10},
+                loading: false,
+                show:false,
+                req: {},
             }
         },
         components: {
@@ -154,6 +135,8 @@
         created(){
             this.getDashboardContent();
             this.handleListener();
+            this.getTotal();
+            this.getData();
         },
         activated(){
             this.handleListener();
@@ -163,7 +146,40 @@
             bus.$off('collapse', this.handleBus);
         },
         methods: {
+            getTotal() {
+                DashboardApi.getCustomerTotal().then((res) => {
+                    if (res.error === false) {
+                        this.CommEntity = res.data;
 
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.$message.error(err.msg);
+                });
+            },
+            // 获取 easy-mock 的模拟数据
+            getData() {
+                this.loading = true;
+                this.req.currentPage = this.page.pageNo
+                this.req.pageSize = this.page.pageSize
+                DashboardApi.getData(this.req).then((res) => {
+                    this.loading = false;
+                    if (res.error === false) {
+                        this.tableData = res.data.records ? res.data.records : []
+                        this.page.pageNo = parseInt(res.data.current)
+                        this.page.totalRows = parseInt(res.data.total)
+                        this.tableData.forEach(item => {
+                            item.status = Boolean(item.status)
+                        })
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.loading = false;
+                    this.$message.error(err.msg);
+                });
+            },
             getDashboardContent(){
                 DashboardApi.getDashboardContent().then((res)=>{
                     console.log(res);
@@ -172,6 +188,7 @@
                     this.$message.error(err.msg);
                 })
             },
+
             handleListener(){
                 bus.$on('collapse', this.handleBus);
                 // 调用renderChart方法对图表进行重新渲染
@@ -181,7 +198,17 @@
                 setTimeout(() => {
                     this.renderChart()
                 }, 300);
-            }
+            },
+            handleCurrentChange(val) {
+                this.page.pageNo = val;
+                this.getData();
+            },
+            changePageSize(value) { // 修改每页条数size
+                this.page.pageNo = 1
+                this.page.pageSize = value
+                this.tableData = null
+                this.getData()
+            },
         }
     }
 
@@ -221,11 +248,11 @@
     }
 
     .grid-con-1 .grid-con-icon {
-        background: rgb(45, 140, 240);
+        background: rgb(242, 94, 67);
     }
 
     .grid-con-1 .grid-num {
-        color: rgb(45, 140, 240);
+        color: rgb(242, 94, 67);
     }
 
     .grid-con-2 .grid-con-icon {
@@ -235,13 +262,11 @@
     .grid-con-2 .grid-num {
         color: rgb(45, 140, 240);
     }
-
     .grid-con-3 .grid-con-icon {
-        background: rgb(242, 94, 67);
+        background: rgb(45, 140, 240);
     }
-
     .grid-con-3 .grid-num {
-        color: rgb(242, 94, 67);
+        color: rgb(45, 140, 240);
     }
 
     .user-info {
@@ -296,6 +321,10 @@
     .schart {
         width: 100%;
         height: 300px;
+    }
+    .table {
+        width: 100%;
+        font-size: 14px;
     }
 
 </style>

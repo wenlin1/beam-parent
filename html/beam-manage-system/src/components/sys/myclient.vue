@@ -11,7 +11,7 @@
 
                 <el-input style="width: 150px" v-model="req.customerStoreName" placeholder="客户店名"></el-input>
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
-                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型">
+                <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型" clearable="true">
                     <el-option
                         v-for="item in customerType"
                         :key="item.value"
@@ -41,6 +41,17 @@
                 </el-table-column>
                 <!-- <el-table-column label="修改时间" align="center" prop="updateTime">-->
                 <!--  </el-table-column>-->
+                <el-table-column label="客户状态" align="center" prop="customerTag"
+                                 :filters="[{ text: '未知', value: 1 },{ text: '拜访', value: 2 },{ text: '意向', value: 3 }, { text: '签约', value: 4 }]"
+                                 :filter-method="filterTag"
+                                 filter-placement="bottom-end">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.customerTag === 1 ? 'primary' : 'success'"
+                            disable-transitions>  {{changeTagLength(scope.row.customerTag)}}</el-tag>
+                    </template>
+
+                </el-table-column>
                 <el-table-column label="客户类型" align="center" prop="customerType">
                     <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
@@ -182,8 +193,26 @@
                     }
                 }
             },
+            changeTagLength() {
+                return function (text) {
+                    if (text == "1") {
+                        return '未知'
+                    } else if (text =="2") {
+                        return '拜访'
+                    }else if (text =="3") {
+                        return '意向'
+                    }else if (text =="4") {
+                        return '签约'
+                    }else if (text =="5") {
+                        return '完成'
+                    }
+                }
+            },
         },
         methods: {
+            filterTag(value, row) {
+                return row.customerTag === value;
+            },
             itemClick(data) {
                 this.selectValue= data
             },

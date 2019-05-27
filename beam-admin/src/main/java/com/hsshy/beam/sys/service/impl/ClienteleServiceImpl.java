@@ -102,4 +102,61 @@ public class ClienteleServiceImpl extends ServiceImpl<ClienteleMapper, Clientele
         params.put("salesName",ShiroUtils.getUserEntity().getName());
         return baseMapper.clientList(params);
     }
+
+    @Override
+    public R updateClienteleStatus(Map<String, Object> params) {
+        baseMapper.updateClienteleStatus(params);
+        return R.ok();
+    }
+
+    @Override
+    public long getCustomerTotal() {
+        Map<String,Object> params=new HashMap<>();
+     return baseMapper.getCustomerTotal(params);
+    }
+
+    @Override
+    public long getMyCustomerTotal() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        return baseMapper.getCustomerTotal(params);
+    }
+
+    @Override
+    public Long getCount() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        params.put("customerTag",1);
+        return baseMapper.getCustomerTotal(params);
+
+    }
+
+    @Override
+    public Long getViewCount() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        params.put("customerTag",2);
+        return baseMapper.getCustomerTotal(params);
+    }
+
+    @Override
+    public Long getIntentionCount() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        params.put("customerTag",3);
+        return baseMapper.getCustomerTotal(params);
+    }
+
+    @Override
+    public Long getSigningCount() {
+        Map<String,Object> params=new HashMap<>();
+        params.put("salesAccount",ShiroUtils.getUserEntity().getAccount());
+        params.put("salesName",ShiroUtils.getUserEntity().getName());
+        params.put("customerTag",4);
+        return baseMapper.getCustomerTotal(params);
+    }
 }
