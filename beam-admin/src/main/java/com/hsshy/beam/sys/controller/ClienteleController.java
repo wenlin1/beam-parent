@@ -63,14 +63,16 @@ public class ClienteleController  extends BaseController {
         commEntity.setTotal(total);
         commEntity.setMyTotal(myTotal);
         commEntity.setCount(count);
-        double number1=((double) count/(double)myTotal)*(double) 100;
-        double number2=((double) viewTotal/(double)myTotal)*(double) 100;
-        double number3=((double) intentionCount/(double)myTotal)*(double) 100;
-        double number4=((double) signingCount/(double)myTotal)*(double) 100;
-        commEntity.setUnknownRate(getTwo(number1));
-        commEntity.setViewRate(getTwo(number2));
-        commEntity.setIntentionRate(getTwo(number3));
-        commEntity.setContractRate(getTwo(number4));
+        if(myTotal!=0) {
+            double number1 = ((double) count / (double) myTotal) * 100.00;
+            double number2 = ((double) viewTotal / (double) myTotal) * 100.00;
+            double number3 = ((double) intentionCount / (double) myTotal) * 100.00;
+            double number4 = ((double) signingCount / (double) myTotal) * 100.00;
+            commEntity.setUnknownRate(getTwo(number1));
+            commEntity.setViewRate(getTwo(number2));
+            commEntity.setIntentionRate(getTwo(number3));
+            commEntity.setContractRate(getTwo(number4));
+        }
 
         return R.ok(commEntity);
     }
