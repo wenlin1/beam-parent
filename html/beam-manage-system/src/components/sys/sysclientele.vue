@@ -26,7 +26,7 @@
 
             <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="客户ID" align="center" prop="id">
+                <el-table-column  label="客户ID" align="center" prop="id" v-if="show">
                 </el-table-column>
                 <el-table-column label="客户店名" align="center" prop="customerStoreName">
                 </el-table-column>
@@ -34,9 +34,7 @@
                 </el-table-column>
                 <el-table-column label="联系人电话" align="center" prop="customerPhone">
                 </el-table-column>
-                <el-table-column label="添加人" align="center" prop="createPersonName">
-                </el-table-column>
-                <el-table-column label="添加时间" align="center" prop="createTime">
+                <el-table-column label="添加人/添加时间" align="center" prop="createPersonName"  show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
@@ -71,6 +69,9 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="clientele" :model="clientele" label-width="100px">
+                <el-form-item label="客户id"  prop="customerId">
+                    <el-input  v-model="clientele.customerId"></el-input>
+                </el-form-item>
                 <el-form-item label="客户店名"  prop="customerStoreName">
                     <el-input  v-model="clientele.customerStoreName"></el-input>
                 </el-form-item>
@@ -80,13 +81,13 @@
                 <el-form-item  label="联系人电话" prop="customerPhone">
                     <el-input v-model="clientele.customerPhone"></el-input>
                 </el-form-item>
-                <el-form-item  label="销售人" prop="salesAccount">
-                    <el-select v-model="form.salesAccount"  placeholder="选择销售人" clearable="ture" filterable="true">
+                <el-form-item  label="绑定销售人" prop="salesAccount">
+                    <el-select v-model="clientele.salesAccount"  placeholder="选择销售人" clearable="ture" filterable="true">
                         <el-option
                             v-for="item in salesList"
-                            :key="item.salesAccount"
-                            :label="item.customerStoreName"
-                            :value="item.salesAccount">
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -151,7 +152,8 @@
                     {id:1,name:"普通客户"},
                     {id:2,name:"重点客户"}
                 ],
-                salesList:[]
+                salesList:[],
+                showId:false
             }
         },
         created() {
@@ -169,6 +171,18 @@
             },
         },
         methods: {
+            getUserList() {
+                ClienteleApi.getUser().then((res) => {
+                    if (res.error === false) {
+                        this.salesList = res.data;
+
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.$message.error(err.msg);
+                });
+            },
             itemClick(data) {
                 this.selectValue= data
             },
@@ -204,6 +218,7 @@
                             this.page.totalRows = parseInt(res.data.total)
                             this.tableData.forEach(item => {
                                 item.status = Boolean(item.status)
+                                item["createPersonName"] = item["createPersonName"]+"/"+item["createTime"];
                             })
                         } else {
                             this.$message.error(res.msg);
@@ -250,6 +265,7 @@
             },
                 handleAdd() {
                     this.clientele = {};
+                    this.getUserList();
                     this.editVisible = true;
                 },
                 handleDelete(index, row) {
@@ -298,4 +314,5 @@
     .red {
         color: #ff0000;
     }
+
 </style>

@@ -20,6 +20,10 @@
         <result property="version" column="version"/>
         <result property="delFlag" column="version"/>
     </resultMap>
+    <resultMap type="com.hsshy.beam.sys.entity.User" id="userResultMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
 
     <sql id="Base_Column_List">
                a.id,
@@ -40,6 +44,10 @@
     <delete id="delURByUserId">
         delete from sys_user_role where user_id = #{userId}
     </delete>
+    <select id="userList" resultMap="userResultMap">
+        select a.id,a.name
+        from sys_user a left join sys_dept b on a.dept_id = b.id
+    </select>
     <!--保存用户角色信息-->
     <insert id="saveUserRole">
         insert into sys_user_role (user_id,role_id)

@@ -19,7 +19,7 @@
                         <el-table :data="tableData" v-loading="loading" border class="table" ref="multipleTable"
                                   @selection-change="handleSelectionChange">
                             <el-table-column type="selection" width="55" align="center"></el-table-column>
-                            <el-table-column label="客户ID" align="center" prop="id">
+                            <el-table-column label="客户ID" align="center" prop="id" v-if="false">
                             </el-table-column>
                             <el-table-column label="拜访对象" align="center" prop="customerStoreName">
                             </el-table-column>
@@ -30,6 +30,9 @@
                             <el-table-column label="拜访结果" align="center" prop="resultInfo">
                             </el-table-column>
                             <el-table-column label="拜访标签" align="center" prop="visitType">
+                                <template slot-scope="scope">
+                                   {{changeRemarkLength(scope.row.visitType)}}
+                                </template>
                             </el-table-column>
                             <el-table-column label="签约金额" align="center" prop="amount">
                             </el-table-column>
@@ -198,7 +201,23 @@
         created() {
             this.getData();
         },
-        computed: {},
+        computed: {
+            changeRemarkLength() {
+                return function (text) {
+                    if (text == "1") {
+                        return '未知'
+                    } else if (text =="2") {
+                        return '拜访'
+                    }else if (text =="3") {
+                        return '意向'
+                    }else if (text =="4") {
+                        return '签约'
+                    }else if (text =="5") {
+                        return '完成'
+                    }
+                }
+            },
+        },
         methods: {
             selectTrigger(type){
                 if(type != 4){

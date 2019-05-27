@@ -23,13 +23,14 @@
         a.`visit_type` AS "visitType",
         a.`result_info` AS "resultInfo",
         a.`amount` AS "amount",
-        a.`creat_time` AS "createTime"
+        a.`creat_time` AS "createTime",
+        b.customer_store_name AS customerStoreName
     </sql>
 
     <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
         select
         <include refid="Base_Column_List"/>
-        from customer_visit a
+        from customer_visit a left join sys_clientele b on a.customer_id=b.id
     </select>
     <select id="getByVisitId" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
         select

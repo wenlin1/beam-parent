@@ -15,4 +15,9 @@ export default {
     batchDelete : ids => {
         return http.post("/clientele/delete", ids)
     },
+
+    getUser : params => {
+         return http.get("/sys/user/userList", params);
+
+    },
 }

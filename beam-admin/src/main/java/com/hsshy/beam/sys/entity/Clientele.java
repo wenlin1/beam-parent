@@ -27,6 +27,8 @@ public class Clientele extends RestEntity<Long> {
      */
     @TableId
     private Long id;
+    @TableField(value = "customer_id")
+    private Long customerId;
     // 日志名称
     @TableField(value = "customer_store_name")
     private String customerStoreName;

@@ -25,7 +25,7 @@
 
             <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="客户ID" align="center" prop="id">
+                <el-table-column label="客户ID" align="center" prop="id" v-if="false">
                 </el-table-column>
                 <el-table-column label="客户店名" align="center" prop="customerStoreName">
                 </el-table-column>

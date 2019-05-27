@@ -4,6 +4,7 @@ import com.hsshy.beam.common.factory.impl.ConstantFactory;
 import com.hsshy.beam.common.utils.R;
 import com.hsshy.beam.common.utils.ToolUtil;
 import com.hsshy.beam.sys.dto.ChangePassowdForm;
+import com.hsshy.beam.sys.entity.Clientele;
 import com.hsshy.beam.sys.entity.Dept;
 import com.hsshy.beam.sys.entity.User;
 import com.hsshy.beam.sys.service.IDeptService;
@@ -98,7 +99,11 @@ public class UserController extends BaseController {
         return userService.changePassword(changePassowdForm);
     }
 
-
+    @ApiOperation(value = "获取我的客户分页列表")
+    @GetMapping(value = "/userList")
+    public Object userList(User user)  {
+        return  R.ok(userService.userList());
+    }
 
 
 
