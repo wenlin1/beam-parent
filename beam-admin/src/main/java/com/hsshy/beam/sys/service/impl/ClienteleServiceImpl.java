@@ -159,4 +159,9 @@ public class ClienteleServiceImpl extends ServiceImpl<ClienteleMapper, Clientele
         params.put("customerTag",4);
         return baseMapper.getCustomerTotal(params);
     }
+
+    @Override
+    public List<Map<String, Object>> queryResultListMap(Map<String, Object> params) {
+        return baseMapper.queryResultListMap(params);
+    }
 }

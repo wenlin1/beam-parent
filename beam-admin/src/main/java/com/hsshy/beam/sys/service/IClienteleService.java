@@ -30,6 +30,8 @@ public interface IClienteleService extends IService<Clientele> {
     Long getViewCount();
     Long getIntentionCount();
     Long getSigningCount();
+    List<Map<String,Object>> queryResultListMap(Map<String,Object> params);
+
 
 
 }

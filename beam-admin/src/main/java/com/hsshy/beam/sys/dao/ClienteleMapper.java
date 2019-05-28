@@ -28,4 +28,6 @@ public interface ClienteleMapper extends BaseMapper<Clientele> {
     List<Clientele> clientList(Map<String,Object> params);
     void updateClienteleStatus(Map<String,Object> params);
     long getCustomerTotal(Map<String,Object> params);
+
+    List<Map<String,Object>> queryResultListMap(Map<String,Object> params);
 }

@@ -30,7 +30,7 @@
                             <el-table-column label="拜访结果" align="center" prop="resultInfo">
                             </el-table-column>
                             <el-table-column label="拜访标签" align="center" prop="visitType"
-                                             :filters="[{ text: '意向', value: 3 }, { text: '签约', value: 4 }]"
+                                             :filters="[{ text: '意向', value: 3 }, { text: '签约', value: 4 },{ text: '其他', value: 2}]"
                                              :filter-method="filterTag"
                                              filter-placement="bottom-end">
                                 <template slot-scope="scope">
@@ -196,7 +196,7 @@
                 },
                 customerList:[],
                 typeList:[
-                    {id:2,typeName:"拜访"},
+                    {id:2,typeName:"其他"},
                     {id:3,typeName:"意向"},
                     {id:4,typeName:"签约"}],
                 isShow:false,
@@ -210,7 +210,7 @@
             changeRemarkLength() {
                 return function (text) {
                     if (text =="2") {
-                        return '拜访'
+                        return '其他'
                     }else if (text =="3") {
                         return '意向'
                     }else if (text =="4") {
