@@ -13,7 +13,7 @@
                 <el-input style="width: 150px" v-model="req.customerPhone" placeholder="联系人电话号码"></el-input>
                 <el-input style="width: 150px" v-model="req.salesName" placeholder="销售人"></el-input>
                 <el-select style="width: 100px" v-model="req.customerType" placeholder="客户类型" clearable="true">
-                   <el-option
+                    <el-option
                         v-for="item in customerTypeList"
                         :key="item.id"
                         :label="item.name"
@@ -24,9 +24,12 @@
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
 
-            <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
+            <el-table row-key="id" :data="tableData" v-loading="loading" border class="table" ref="multipleTable"
+                      @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column  label="客户ID" align="center" prop="id" v-if="show">
+                <el-table-column label="客户ID" align="center" prop="id" v-if="show">
+                </el-table-column>
+                <el-table-column label="客户编码" align="center" prop="customerId">
                 </el-table-column>
                 <el-table-column label="客户店名" align="center" prop="customerStoreName">
                 </el-table-column>
@@ -34,7 +37,7 @@
                 </el-table-column>
                 <el-table-column label="联系人电话" align="center" prop="customerPhone">
                 </el-table-column>
-                <el-table-column label="添加人/添加时间" align="center" prop="createPersonName"  show-overflow-tooltip="true">
+                <el-table-column label="添加人/添加时间" align="center" prop="createPersonName" show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column label="销售人" align="center" prop="salesName">
                 </el-table-column>
@@ -45,20 +48,24 @@
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.customerTag === 1 ? 'primary' : 'success'"
-                            disable-transitions>  {{changeTagLength(scope.row.customerTag)}}</el-tag>
+                            disable-transitions> {{changeTagLength(scope.row.customerTag)}}
+                        </el-tag>
                     </template>
 
                 </el-table-column>
                 <el-table-column label="客户类型" align="center" prop="customerType">
-                   <template slot-scope="scope">
+                    <template slot-scope="scope">
                         <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
                         <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red"
+                                   @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
 
                     </template>
                 </el-table-column>
@@ -79,21 +86,18 @@
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="clientele" :model="clientele" label-width="100px">
-                <el-form-item label="客户id"  prop="customerId">
-                    <el-input  v-model="clientele.customerId"></el-input>
-                </el-form-item>
-                <el-form-item label="客户店名"  prop="customerStoreName">
-                    <el-input  v-model="clientele.customerStoreName"></el-input>
+            <el-form ref="clientele" :model="clientele" :rules="rules" label-width="100px">
+                <el-form-item label="客户店名" prop="customerStoreName">
+                    <el-input v-model="clientele.customerStoreName"></el-input>
                 </el-form-item>
                 <el-form-item label="联系人姓名" prop="customerContactName">
                     <el-input v-model="clientele.customerContactName"></el-input>
                 </el-form-item>
-                <el-form-item  label="联系人电话" prop="customerPhone">
-                    <el-input v-model="clientele.customerPhone"></el-input>
+                <el-form-item label="联系人电话" prop="customerPhone">
+                    <el-input style="width: 200px" v-model="clientele.customerPhone"></el-input>
                 </el-form-item>
-                <el-form-item  label="绑定销售人" prop="salesAccount">
-                    <el-select v-model="clientele.salesAccount"  placeholder="选择销售人" clearable="ture" filterable="true">
+                <el-form-item label="绑定销售人" prop="salesAccount">
+                    <el-select v-model="clientele.salesAccount" placeholder="选择销售人" clearable="ture" filterable="true">
                         <el-option
                             v-for="item in salesList"
                             :key="item.id"
@@ -116,7 +120,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" :loading="loading" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" :loading="loading" @click="saveEdit('clientele')">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 删除提示框 -->
@@ -139,15 +143,51 @@
         components: {ElSelectDropdown},
         name: 'basetable',
         data() {
+
+            var validateMobilePhone = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('手机号不可为空'));
+                } else {
+                    if (value !== '') {
+                        var reg = /^1[3456789]\d{9}$/;
+                        if (!reg.test(value)) {
+                            callback(new Error('请输入有效的手机号码'));
+                        }
+                    }
+                    callback();
+                }
+            };
+
             return {
-                configMenuDialog:false,
+                configMenuDialog: false,
                 tableData: [],
                 page: {pageNo: 1, pageSize: 10},
                 multipleSelection: [],
                 is_search: false,
                 editVisible: false,
                 delVisible: false,
-                clientele: {},
+                clientele: {
+                    customerStoreName: '',
+                    customerContactName: '',
+                    customerPhone: '',
+                    customerType: ''
+                },
+                rules: {
+                    customerStoreName: [
+                        {required: true, message: '请输入客户店名', trigger: 'blur'},
+                    ],
+                    customerContactName: [
+                        {required: true, message: '请输入联系人姓名', trigger: 'blur'}
+                    ],
+                    customerPhone: [
+                        {required: true, message: '请输入联系人电话', trigger: 'blur'},
+                        {min: 11, max: 11, message: '11位手机号', trigger: 'blur'},
+                        {validator: validateMobilePhone, trigger: 'blur'},
+                    ],
+                    customerType: [
+                        {required: true, message: '请选择客户类型', trigger: 'change'}
+                    ],
+                },
                 idx: -1,
                 ids: [],
                 req: {},
@@ -158,14 +198,14 @@
                     children: 'children',
                     label: 'name'
                 },
-                checkMenuData:[],
-                roleId:null,
-                customerTypeList:[
-                    {id:1,name:"普通客户"},
-                    {id:2,name:"重点客户"}
+                checkMenuData: [],
+                roleId: null,
+                customerTypeList: [
+                    {id: 1, name: "普通客户"},
+                    {id: 2, name: "重点客户"}
                 ],
-                salesList:[],
-                showId:false
+                salesList: [],
+                showId: false
             }
         },
         created() {
@@ -176,7 +216,7 @@
                 return function (text) {
                     if (text == "1") {
                         return '普通客户'
-                    } else if (text =="2") {
+                    } else if (text == "2") {
                         return '重点客户'
                     }
                 }
@@ -185,13 +225,13 @@
                 return function (text) {
                     if (text == "1") {
                         return '未知'
-                    } else if (text =="2") {
+                    } else if (text == "2") {
                         return '拜访'
-                    }else if (text =="3") {
+                    } else if (text == "3") {
                         return '意向'
-                    }else if (text =="4") {
+                    } else if (text == "4") {
                         return '签约'
-                    }else if (text =="5") {
+                    } else if (text == "5") {
                         return '完成'
                     }
                 }
@@ -214,71 +254,74 @@
                 });
             },
             itemClick(data) {
-                this.selectValue= data
+                this.selectValue = data
             },
             getInputValue(searchvalue) {
                 console.log(searchvalue)
                 // 请求获取筛选列表
 
             },
-                handleCurrentChange(val) {
-                    this.page.pageNo = val;
-                    this.getData();
-                },
-                changePageSize(value) { // 修改每页条数size
-                    this.page.pageNo = 1
-                    this.page.pageSize = value
-                    this.tableData = null
-                    this.getData()
-                },
-                reload() {
-                    this.page.pageNo = 1
-                    this.getData()
-                },
-                // 获取 easy-mock 的模拟数据
-                getData() {
-                    this.loading = true;
-                    this.req.currentPage = this.page.pageNo
-                    this.req.pageSize = this.page.pageSize
-                    ClienteleApi.getData(this.req).then((res) => {
-                        this.loading = false;
-                        if (res.error === false) {
-                            this.tableData = res.data.records ? res.data.records : []
-                            this.page.pageNo = parseInt(res.data.current)
-                            this.page.totalRows = parseInt(res.data.total)
-                            this.tableData.forEach(item => {
-                                item.status = Boolean(item.status)
-                                item["createPersonName"] = item["createPersonName"]+"/"+item["createTime"];
-                            })
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-                    }, (err) => {
-                        this.loading = false;
-                        this.$message.error(err.msg);
-                    });
-                },
-                search() {
-                    this.is_search = true;
-                    this.getData();
-                },
-                saveEdit() {
-                    this.loading = true
-                    ClienteleApi.save(this.clientele).then((res) => {
-                        this.loading = false
-                        if (res.error === false) {
-                            this.editVisible = false
-                            this.$message.success(res.msg);
-                            this.reload()
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-                    }, (err) => {
-                        this.loading = false
-                        this.$message.error(err.msg);
-                    })
-
-                },
+            handleCurrentChange(val) {
+                this.page.pageNo = val;
+                this.getData();
+            },
+            changePageSize(value) { // 修改每页条数size
+                this.page.pageNo = 1
+                this.page.pageSize = value
+                this.tableData = null
+                this.getData()
+            },
+            reload() {
+                this.page.pageNo = 1
+                this.getData()
+            },
+            // 获取 easy-mock 的模拟数据
+            getData() {
+                this.loading = true;
+                this.req.currentPage = this.page.pageNo
+                this.req.pageSize = this.page.pageSize
+                ClienteleApi.getData(this.req).then((res) => {
+                    this.loading = false;
+                    if (res.error === false) {
+                        this.tableData = res.data.records ? res.data.records : []
+                        this.page.pageNo = parseInt(res.data.current)
+                        this.page.totalRows = parseInt(res.data.total)
+                        this.tableData.forEach(item => {
+                            item.status = Boolean(item.status)
+                            item["createPersonName"] = item["createPersonName"] + "/" + item["createTime"];
+                        })
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.loading = false;
+                    this.$message.error(err.msg);
+                });
+            },
+            search() {
+                this.is_search = true;
+                this.getData();
+            },
+            saveEdit(clientele) {
+                this.$refs[clientele].validate((valid) => {
+                    if (valid) {
+                        this.loading = true
+                        ClienteleApi.save(this.clientele).then((res) => {
+                            this.loading = false
+                            if (res.error === false) {
+                                this.editVisible = false
+                                this.$message.success(res.msg);
+                                this.reload()
+                            } else {
+                                this.$message.error(res.msg);
+                            }
+                        }, (err) => {
+                            this.loading = false
+                            this.$message.error(err.msg);
+                        })
+                    }
+                });
+            },
             deleteRow() {
                 ClienteleApi.batchDelete(this.ids).then((res) => {
                     if (res.error === false) {
@@ -293,25 +336,25 @@
                 })
                 this.delVisible = false;
             },
-                handleAdd() {
-                    this.clientele = {};
-                    this.getUserList();
-                    this.editVisible = true;
-                },
-                handleDelete(index, row) {
-                    this.ids = [row.id];
-                    this.delVisible = true;
-                },
-                handleEdit(index, row) {
-                    this.idx = index;
-                    const item = this.tableData[index];
-                    this.clientele = item;
-                    this.editVisible=true;
-
-                },
-                //计算属性
+            handleAdd() {
+                this.clientele = {};
+                this.getUserList();
+                this.editVisible = true;
+            },
+            handleDelete(index, row) {
+                this.ids = [row.id];
+                this.delVisible = true;
+            },
+            handleEdit(index, row) {
+                this.idx = index;
+                const item = this.tableData[index];
+                this.clientele = item;
+                this.editVisible = true;
 
             },
+            //计算属性
+
+        },
 
     }
 

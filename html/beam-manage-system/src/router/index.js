@@ -90,6 +90,11 @@ export default new Router({
                     path: '/customerVisit',
                     component: resolve => require(['../components/sys/customerVisit.vue'], resolve),
                     meta: { title: '客户拜访' }
+                },
+                {
+                    path: '/signingReport',
+                    component: resolve => require(['../components/sys/signingReport.vue'], resolve),
+                    meta: { title: '签约报表' }
                 }
 
             ]

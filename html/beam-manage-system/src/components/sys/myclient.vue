@@ -23,9 +23,12 @@
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">添加我的客户</el-button>
             </div>
 
-            <el-table row-key="id" :data="tableData" v-loading = "loading" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
+            <el-table row-key="id" :data="tableData" v-loading="loading" border class="table" ref="multipleTable"
+                      @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column label="客户ID" align="center" prop="id" v-if="false">
+                </el-table-column>
+                <el-table-column label="客户编码" align="center" prop="customerId">
                 </el-table-column>
                 <el-table-column label="客户店名" align="center" prop="customerStoreName">
                 </el-table-column>
@@ -48,7 +51,8 @@
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.customerTag === 1 ? 'primary' : 'success'"
-                            disable-transitions>  {{changeTagLength(scope.row.customerTag)}}</el-tag>
+                            disable-transitions> {{changeTagLength(scope.row.customerTag)}}
+                        </el-tag>
                     </template>
 
                 </el-table-column>
@@ -60,7 +64,14 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">释放</el-button>
+                        <el-button type="text" icon="el-icon-headset" @click="handleVisit(scope.$index, scope.row)">拜访
+                        </el-button>
+                        <el-button type="text" icon="el-icon-view" class="green"
+                                   @click="handleVisitInfo(scope.$index, scope.row)">拜访记录
+                        </el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red"
+                                   @click="handleDelete(scope.$index, scope.row)">释放
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -94,17 +105,18 @@
                 <el-button type="primary" icon="search" @click="mySearch">搜索</el-button>
                 <el-button type="primary" icon="search" @click="addMyClient">导入</el-button>
             </div>
-              <el-table :data="tableClinetData" v-loading="myLoading" border class="table" ref="multipleTable"  @selection-change="handleMySelectionChange">
+            <el-table :data="tableClinetData" v-loading="myLoading" border class="table" ref="multipleTable"
+                      @selection-change="handleMySelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column label="客户店名" align="center" prop="customerStoreName"></el-table-column>
                 <el-table-column label="联系人姓名" align="center" prop="customerContactName"></el-table-column>
                 <el-table-column label="联系人电话" align="center" prop="customerPhone"></el-table-column>
-                  <el-table-column label="客户类型" align="center" prop="customerType">
-                      <template slot-scope="scope">
-                          <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
-                          <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
-                      </template>
-                  </el-table-column>
+                <el-table-column label="客户类型" align="center" prop="customerType">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.customerType == '2'"><font class="red">{{changeRemarkLength(scope.row.customerType)}}</font></span>
+                        <span v-else>{{changeRemarkLength(scope.row.customerType)}}</span>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="mypagination">
                 <el-pagination
@@ -119,9 +131,100 @@
                 </el-pagination>
             </div>
         </el-dialog>
+        <!--添加拜访记录-->
+        <el-dialog title="添加拜访" :visible.sync="editVisitVisible" width="30%">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-input id="customerId" v-model="form.customerId" v-show="false">
+                </el-input>
+                <el-form-item label="拜访对象" prop="customerStoreName">
+                    <el-input v-model="form.customerStoreName" disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="拜访时间" prop="visitTime">
+                    <el-date-picker type="date" placeholder="选择日期" v-model="form.visitTime">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="拜访进度" prop="visitSchedule">
+                    <el-input type="textarea" v-model="form.visitSchedule"></el-input>
+                </el-form-item>
+                <el-form-item label="拜访内容" prop="visitInfo">
+                    <el-input type="textarea" v-model="form.visitInfo"></el-input>
+                </el-form-item>
+                <el-form-item label="拜访结果" prop="resultInfo">
+                    <el-input type="textarea" v-model="form.resultInfo"></el-input>
+                </el-form-item>
+                <el-form-item label="拜访标签">
+                    <el-select v-model="form.visitType" placeholder="选择标签" @change="selectTrigger(form.visitType)"
+                               clearable="true">
+                        <el-option
+                            v-for="item in typeList"
+                            :key="item.id"
+                            :label="item.typeName"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-show="isShow" label="签约金额">
+                    <el-input v-model="form.amount" style="width: 210px"></el-input>
+                    元
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisitVisible = false">取 消</el-button>
+                <el-button type="primary" :loading="loading" @click="saveVisitEdit('form')">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 编辑弹出框 -->
+        <el-dialog title="查看记录" :visible.sync="viewVisible" width="70%">
+            <el-input v-model="viewReq.customerId" placeholder="customerId" v-show="false"></el-input>
+            <el-table :data="tableViewData" v-loading="viewLoading" border class="table" ref="multipleTable"
+                      @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column label="客户ID" align="center" prop="id" v-if="false">
+                </el-table-column>
+                <el-table-column label="客户店名" align="center" prop="customerStoreName">
+                </el-table-column>
+                <el-table-column prop="visitTime" align="center" label="拜访时间" :formatter="dateFormat">
+                </el-table-column>
+                <el-table-column label="拜访进度" align="center" prop="visitSchedule">
+                </el-table-column>
+                <el-table-column label="拜访内容" align="center" prop="visitInfo">
+                </el-table-column>
+                <el-table-column label="拜访结果" align="center" prop="resultInfo">
+                </el-table-column>
+                <el-table-column label="拜访标签" align="center" prop="visitType"
+                                 :filters="[{ text: '意向', value: 3 }, { text: '签约', value: 4 },{ text: '其他', value: 2}]"
+                                 :filter-method="filterTag"
+                                 filter-placement="bottom-end">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.visitType === '意向' ? 'primary' : 'success'"
+                            disable-transitions> {{changeViewRemarkLength(scope.row.visitType)}}
+                        </el-tag>
+                    </template>
+
+                </el-table-column>
+                <el-table-column label="签约金额" align="center" prop="amount">
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    background
+                    :page-sizes="[10, 20, 30, 40, 50]"
+                    :page-size="viewPage.pageSize"
+                    :current-page="viewPage.pageNo"
+                    @current-change="handleViewCurrentChange"
+                    @size-change="changeViewPageSize"
+                    layout="prev, pager, next"
+                    :total="viewPage.totalRows">
+                </el-pagination>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="viewVisible = false">返回</el-button>
+            </span>
+        </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+            <div class="del-dialog-cnt">客户释放后将回归客户池中，是否确定释放客户？</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="delVisible = false">取 消</el-button>
                 <el-button type="primary" @click="deleteRow">确 定</el-button>
@@ -139,56 +242,108 @@
         name: 'basetable',
         data() {
             return {
-                configMenuDialog:false,
+                configMenuDialog: false,
                 tableData: [],
+                tableViewData: [],
                 tableClinetData: [],
                 page: {pageNo: 1, pageSize: 10},
                 myPage: {pageNo: 1, pageSize: 10},
+                viewPage: {pageNo: 1, pageSize: 10},
                 multipleSelection: [],
                 multipleMySelection: [],
                 is_search: false,
-                is_mySearch:false,
+                is_mySearch: false,
                 editVisible: false,
+                editVisitVisible: false,
+                viewVisible: false,
                 delVisible: false,
                 addVisible: false,
                 clientele: {},
+                customerList: [],
                 idx: -1,
                 ids: [],
-                addIds:[],
+                addIds: [],
                 req: {},
-                myReq:{},
+                myReq: {},
+                viewReq: {},
+                form: {
+                    customerId: '',
+                    visitSchedule: '',
+                    customerStoreName: '',
+                    visitTime: '',
+                    visitInfo: '',
+                    resultInfo: '',
+                    email: '',
+                    phone: '',
+                    deptId: '',
+                    roleIds: []
+                },
+                rules: {
+                    customerStoreName: [
+                        {required: true, message: '请输入拜访对象', trigger: 'blur'},
+                    ],
+                    visitTime: [
+                        {type: 'date', required: true, message: '请选择日期', trigger: 'change'}
+                    ],
+                    visitSchedule: [
+                        {required: true, message: '请输入拜访进度', trigger: 'blur'},
+                    ],
+                    visitInfo: [
+                        {required: true, message: '请输入拜访内容', trigger: 'blur'},
+                    ],
+                    resultInfo: [
+                        {required: true, message: '请输入拜访结果', trigger: 'blur'},
+                    ]
+                },
                 accountInput: true,
                 loading: false,
                 myLoading: false,
-                customerType:[
-                    {value:1,name:"普通客户"},
-                    {value:2,name:"重点客户"}
+                viewLoading: false,
+                customerType: [
+                    {value: 1, name: "普通客户"},
+                    {value: 2, name: "重点客户"}
                 ],
                 menuTreeData: [],
                 defaultProps: {
                     children: 'children',
                     label: 'name'
                 },
-                checkMenuData:[],
+                checkMenuData: [],
                 itemlist: [],
                 placeholder: "搜索",
                 nodatatext: "暂无数据",
                 selectValue: "",
-                roleId:null
+                roleId: null,
+                typeList: [
+                    {id: 2, typeName: "其他"},
+                    {id: 3, typeName: "意向"},
+                    {id: 4, typeName: "签约"}],
+                isShow: false,
             }
         },
         created() {
             this.getData();
         },
-        myCreated(){
+        myCreated() {
             this.getMyData();
         },
         computed: {
+            changeViewRemarkLength() {
+                return function (text) {
+                    if (text == "2") {
+                        return '其他'
+                    } else if (text == "3") {
+                        return '意向'
+                    } else if (text == "4") {
+                        return '签约'
+                    }
+                }
+            },
             changeRemarkLength() {
                 return function (text) {
                     if (text == "1") {
                         return '普通客户'
-                    } else if (text =="2") {
+                    } else if (text == "2") {
                         return '重点客户'
                     }
                 }
@@ -197,24 +352,38 @@
                 return function (text) {
                     if (text == "1") {
                         return '未知'
-                    } else if (text =="2") {
+                    } else if (text == "2") {
                         return '拜访'
-                    }else if (text =="3") {
+                    } else if (text == "3") {
                         return '意向'
-                    }else if (text =="4") {
+                    } else if (text == "4") {
                         return '签约'
-                    }else if (text =="5") {
+                    } else if (text == "5") {
                         return '完成'
                     }
                 }
             },
         },
         methods: {
+            dateFormat: function (row, column) {
+                var date = row[column.property];
+                if (date != null) {
+                    const timeFormat = date.substring(0, 10);
+                    return timeFormat;
+                }
+            },
+            selectTrigger(type) {
+                if (type != 4) {
+                    this.isShow = false;
+                } else {
+                    this.isShow = true;
+                }
+            },
             filterTag(value, row) {
                 return row.customerTag === value;
             },
             itemClick(data) {
-                this.selectValue= data
+                this.selectValue = data
             },
             getInputValue(searchvalue) {
                 console.log(searchvalue)
@@ -225,11 +394,21 @@
                 this.page.pageNo = val;
                 this.getData();
             },
+            handleViewCurrentChange(val) {
+                this.viewPage.pageNo = val;
+                this.getViewData();
+            },
             changePageSize(value) { // 修改每页条数size
-                this.page.pageNo = 1
-                this.page.pageSize = value
+                this.viewPage.pageNo = 1
+                this.viewPage.pageSize = value
                 this.tableData = null
                 this.getData()
+            },
+            changeViewPageSize(value) { // 修改每页条数size
+                this.page.pageNo = 1
+                this.page.pageSize = value
+                this.tableViewData = null
+                this.getViewData()
             },
             reload() {
                 this.page.pageNo = 1
@@ -257,6 +436,27 @@
                     this.$message.error(err.msg);
                 });
             },
+            getViewData() {
+                this.viewLoading = true;
+                this.viewReq.currentPage = this.viewPage.pageNo;
+                this.viewReq.pageSize = this.viewPage.pageSize;
+                MyClientApi.getViewData(this.viewReq).then((res) => {
+                    this.viewLoading = false;
+                    if (res.error === false) {
+                        this.tableViewData = res.data.records ? res.data.records : []
+                        this.viewPage.pageNo = parseInt(res.data.current)
+                        this.viewPage.totalRows = parseInt(res.data.total)
+                        this.tableViewData.forEach(item => {
+                            item.status = Boolean(item.status)
+                        })
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }, (err) => {
+                    this.viewLoading = false;
+                    this.$message.error(err.msg);
+                });
+            },
             search() {
                 this.is_search = true;
                 this.getData();
@@ -275,6 +475,27 @@
                 }, (err) => {
                     this.loading = false
                     this.$message.error(err.msg);
+                })
+
+            },
+            saveVisitEdit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.loading = true
+                        MyClientApi.saveVisitEdit(this.form).then((res) => {
+                            this.loading = false
+                            if (res.error === false) {
+                                this.editVisitVisible = false
+                                this.$message.success(res.msg);
+                                this.reload()
+                            } else {
+                                this.$message.error(res.msg);
+                            }
+                        }, (err) => {
+                            this.loading = false
+                            this.$message.error(err.msg);
+                        })
+                    }
                 })
 
             },
@@ -301,11 +522,27 @@
                 this.ids = [row.id];
                 this.delVisible = true;
             },
+            handleVisit(index, row) {
+                this.isShow = false;
+                this.form = {
+                    customerId: row.customerId,
+                    customerStoreName: row.customerStoreName
+                };
+                this.editVisitVisible = true;
+            },
+            handleVisitInfo(index, row) {
+                this.viewReq = {
+                    customerId: row.customerId
+                };
+                this.viewVisible = true;
+                this.getViewData();
+
+            },
             handleEdit(index, row) {
                 this.idx = index;
                 const item = this.tableData[index];
                 this.clientele = item;
-                this.editVisible=true;
+                this.editVisible = true;
 
             },
             //
@@ -405,5 +642,9 @@
 
     .red {
         color: #ff0000;
+    }
+
+    .green {
+        color: #44BB5C;
     }
 </style>
