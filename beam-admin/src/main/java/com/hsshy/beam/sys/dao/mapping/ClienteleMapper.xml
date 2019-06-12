@@ -164,6 +164,7 @@
         WHERE sales_account IS NOT NULL
           AND sales_name IS NOT NULL
           AND into_time IS NOT NULL
+          AND customer_tag = 1
           AND TO_DAYS(NOW()) - TO_DAYS(into_time) > 7
     </update>
 </mapper>
