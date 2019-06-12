@@ -15,9 +15,9 @@ public class ExportDataService {
     ExportExcelUtil exportExcelUtil;
 
     /*导出用户数据表*/
-    public void exportDataToEx(HttpServletResponse response, ArrayList<String> titleKeyList, Map<String, String> titleMap, List<Map<String,Object>> src_list) {
+    public void exportDataToEx(HttpServletResponse response, ArrayList<String> titleKeyList, Map<String, String> titleMap, List<Map<String,Object>> src_list,String startTime) {
         try {
-            exportExcelUtil.expoerDataExcel(response, titleKeyList, titleMap, src_list);
+            exportExcelUtil.expoerDataExcel(response, titleKeyList, titleMap, src_list,startTime);
         } catch (Exception e) {
             System.out.println("Exception: " + e.toString());
         }

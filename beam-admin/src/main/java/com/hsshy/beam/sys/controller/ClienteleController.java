@@ -21,49 +21,49 @@ import java.math.BigDecimal;
  * @email 1102464140@qq.com
  * @date 2019-05-21 18:03:20
  */
-@Api(value="ClienteleController",tags={"客户信息接口"})
+@Api(value = "ClienteleController", tags = {"客户信息接口"})
 @RequestMapping("/clientele")
 @RestController
-public class ClienteleController  extends BaseController {
+public class ClienteleController extends BaseController {
     @Autowired
     private IClienteleService clienteleService;
 
     @RequiresPermissions("clientele:list")
     @ApiOperation(value = "分页列表")
     @GetMapping(value = "/page/list")
-    public Object pageList(Clientele clientele)  {
-        return  R.ok(clienteleService.selectPageList(clientele));
+    public Object pageList(Clientele clientele) {
+        return R.ok(clienteleService.selectPageList(clientele));
     }
 
     @ApiOperation("保存用户")
     @PostMapping(value = "/save")
     @RequiresPermissions("clientele:save")
-    public Object save(@RequestBody Clientele clientele){
-      clienteleService.saveClientele(clientele);
-      return R.ok();
+    public Object save(@RequestBody Clientele clientele) {
+        clienteleService.saveClientele(clientele);
+        return R.ok();
     }
 
     @RequiresPermissions("clientele:del")
     @ApiOperation("批量删除用户")
     @PostMapping(value = "/delete")
-    public Object delete(@RequestBody Long ids[]){
+    public Object delete(@RequestBody Long ids[]) {
         return clienteleService.deleteClientele(ids);
     }
 
     @ApiOperation("总客户数")
     @GetMapping(value = "/getCustomerTotal")
-    public R getCustomerTotal(Clientele clientele){
-        CommEntity commEntity=new CommEntity();
-       long total=clienteleService.getCustomerTotal();
-       long myTotal=clienteleService.getMyCustomerTotal();
-       long count=clienteleService.getCount();
-       long viewTotal=clienteleService.getViewCount();
-       long intentionCount=clienteleService.getIntentionCount();
-       long signingCount=clienteleService.getSigningCount();
+    public R getCustomerTotal(Clientele clientele) {
+        CommEntity commEntity = new CommEntity();
+        long total = clienteleService.getCustomerTotal();
+        long myTotal = clienteleService.getMyCustomerTotal();
+        long count = clienteleService.getCount();
+        long viewTotal = clienteleService.getViewCount();
+        long intentionCount = clienteleService.getIntentionCount();
+        long signingCount = clienteleService.getSigningCount();
         commEntity.setTotal(total);
         commEntity.setMyTotal(myTotal);
         commEntity.setCount(count);
-        if(myTotal!=0) {
+        if (myTotal != 0) {
             double number1 = ((double) count / (double) myTotal) * 100.00;
             double number2 = ((double) viewTotal / (double) myTotal) * 100.00;
             double number3 = ((double) intentionCount / (double) myTotal) * 100.00;
@@ -76,7 +76,8 @@ public class ClienteleController  extends BaseController {
 
         return R.ok(commEntity);
     }
-    public static double getTwo(double var){
+
+    public static double getTwo(double var) {
         BigDecimal b = new BigDecimal(var);
         double df = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return df;

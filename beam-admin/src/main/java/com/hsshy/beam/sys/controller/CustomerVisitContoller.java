@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 
-@Api(value="CustomerVisitContoller",tags={"客户拜访信息接口"})
+@Api(value = "CustomerVisitContoller", tags = {"客户拜访信息接口"})
 @RequestMapping("/customerVisit")
 @RestController
-public class CustomerVisitContoller   extends BaseController {
+public class CustomerVisitContoller extends BaseController {
     @Autowired
     private ICustomerVisitService customerVisitService;
     @Autowired
@@ -31,35 +31,48 @@ public class CustomerVisitContoller   extends BaseController {
     @RequiresPermissions("customerVisit:list")
     @ApiOperation(value = "分页列表")
     @GetMapping(value = "/page/list")
-    public Object pageList(CustomerVisit customerVisit)  {
-        IPage<CustomerVisit> list=customerVisitService.selectPageList(customerVisit);
-        return  R.ok(customerVisitService.selectPageList(customerVisit));
+    public Object pageList(CustomerVisit customerVisit) {
+        IPage<CustomerVisit> list = customerVisitService.selectPageList(customerVisit);
+        return R.ok(customerVisitService.selectPageList(customerVisit));
+    }
+
+    @ApiOperation(value = "查看分页列表")
+    @GetMapping(value = "/page/viewlist")
+    public Object pageViewList(CustomerVisit customerVisit) {
+        IPage<CustomerVisit> list = customerVisitService.selectPageList(customerVisit);
+        return R.ok(customerVisitService.selectPageList(customerVisit));
     }
 
     @ApiOperation("保存用户")
     @PostMapping(value = "/save")
     @RequiresPermissions("customerVisit:save")
-    public Object save(@RequestBody CustomerVisit customerVisit){
-        HashMap<String,Object> params=new HashMap<>();
-        if(customerVisit.getId()!=null){
-            params.put("customerTag",customerVisit.getVisitType());
+    public Object save(@RequestBody CustomerVisit customerVisit) {
+        HashMap<String, Object> params = new HashMap<>();
+        if (customerVisit.getId() != null || customerVisit.getCustomerId() != null) {
+            if (customerVisit.getVisitType() == 0) {
+                customerVisit.setVisitType(2);
+                params.put("customerTag", 2);
+            } else {
+                params.put("customerTag", customerVisit.getVisitType());
+            }
 
-        }else{
-            params.put("customerTag",2);
-            if(customerVisit.getVisitType()==0) {
+        } else {
+            params.put("customerTag", 2);
+            if (customerVisit.getVisitType() == 0) {
                 customerVisit.setVisitType(2);
             }
         }
-        params.put("id",customerVisit.getCustomerId());
+        params.put("customerId", customerVisit.getCustomerId());
         customerVisitService.saveVisit(customerVisit);
         clienteleService.updateClienteleStatus(params);
         return R.ok();
     }
+
     @ApiOperation("用户详情")
     @GetMapping(value = "/info")
-    public R info(@RequestParam Long id){
+    public R info(@RequestParam Long id) {
         CustomerVisit customerVisit = customerVisitService.getByVisitId(id);
-        if(ToolUtil.isEmpty(customerVisit)){
+        if (ToolUtil.isEmpty(customerVisit)) {
             return R.fail("找不到该记录");
         }
         return R.ok(customerVisit);

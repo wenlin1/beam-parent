@@ -22,6 +22,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         a.`id` AS "id",
+        a.`customer_id` AS "customerId",
         a.`customer_store_name` AS "customerStoreName",
         a.`customer_contact_name` AS "customerContactName",
         a.`customer_phone` AS "customerPhone",
@@ -81,9 +82,9 @@
     </select>
     <!--保存客户信息-->
     <insert id="saveClientele">
-        insert into sys_clientele (customer_store_name,customer_contact_name,customer_phone,
+        insert into sys_clientele (customer_id,customer_store_name,customer_contact_name,customer_phone,
         create_person_id,create_person_name,customer_type,is_delete)
-        values( #{clientele.customerStoreName}, #{clientele.customerContactName},#{clientele.customerPhone}, #{clientele.createPersonId},
+        values( #{clientele.customerId},#{clientele.customerStoreName}, #{clientele.customerContactName},#{clientele.customerPhone}, #{clientele.createPersonId},
           #{clientele.createPersonName},#{clientele.customerType},0)
     </insert>
     <update id="delClienteleByid">
@@ -123,13 +124,13 @@
         where id=#{clientele.id}
     </update>
     <update id="addMyClient" parameterType="HashMap">
-        UPDATE sys_clientele  SET sales_account=#{salesAccount},sales_name=#{salesName} WHERE id=#{id}
+        UPDATE sys_clientele  SET into_time=now(),sales_account=#{salesAccount},sales_name=#{salesName} WHERE id=#{id}
     </update>
     <update id="updateClienteleStatus" parameterType="HashMap">
-         UPDATE sys_clientele  SET customer_tag=#{customerTag} WHERE id=#{id}
+         UPDATE sys_clientele  SET customer_tag=#{customerTag} WHERE customer_id=#{customerId}
     </update>
     <update id="deleteMyClient" parameterType="HashMap">
-        UPDATE sys_clientele  SET sales_account="",sales_name="",customer_tag=1 WHERE id=#{id}
+        UPDATE sys_clientele  SET into_time=NULL ,sales_account="",sales_name="",customer_tag=1 WHERE id=#{id}
     </update>
     <select id="clientList" parameterType="HashMap" resultMap="clientResultMap">
          select id,

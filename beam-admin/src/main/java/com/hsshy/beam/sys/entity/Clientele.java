@@ -27,6 +27,7 @@ public class Clientele extends RestEntity<Long> {
      */
     @TableId
     private Long id;
+
     @TableField(value = "customer_id")
     private Long customerId;
     // 日志名称
@@ -70,6 +71,7 @@ public class Clientele extends RestEntity<Long> {
     // ip
     @TableField(value = "is_delete")
     private String isDelete;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

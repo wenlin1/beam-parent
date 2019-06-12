@@ -12,6 +12,9 @@ import com.hsshy.beam.sys.entity.CustomerVisit;
 import com.hsshy.beam.sys.service.ICustomerVisitService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class CustomerVisitServiceImpl  extends ServiceImpl<CustomerVisitMapper, CustomerVisit> implements ICustomerVisitService {
     @Override
@@ -38,5 +41,11 @@ public class CustomerVisitServiceImpl  extends ServiceImpl<CustomerVisitMapper, 
     @Override
     public CustomerVisit getByVisitId(long id) {
        return baseMapper.getByVisitId(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryResultListMap(Map<String, Object> params) {
+        List<Map<String, Object>> list=baseMapper.queryResultListMap(params);
+        return list;
     }
 }

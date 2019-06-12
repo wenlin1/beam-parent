@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hsshy.beam.common.constant.Constant;
 import com.hsshy.beam.common.shiro.ShiroUtils;
+import com.hsshy.beam.common.util.IdUtils;
 import com.hsshy.beam.common.utils.R;
 import com.hsshy.beam.common.utils.ToolUtil;
 import com.hsshy.beam.sys.dao.ClienteleMapper;
@@ -41,6 +42,7 @@ public class ClienteleServiceImpl extends ServiceImpl<ClienteleMapper, Clientele
         }else {
             clientele.setCreatePersonId(ShiroUtils.getUserEntity().getAccount());
             clientele.setCreatePersonName(ShiroUtils.getUserEntity().getName());
+            clientele.setCustomerId(Long.valueOf(IdUtils.getId()));
             baseMapper.saveClientele(clientele);
         }
          return R.ok();

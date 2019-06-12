@@ -1,13 +1,12 @@
 package com.hsshy.beam.sys.controller;
 
-import com.hsshy.beam.sys.service.IClienteleService;
+import com.hsshy.beam.common.utils.R;
+import com.hsshy.beam.sys.entity.CustomerVisit;
+import com.hsshy.beam.sys.service.ICustomerVisitService;
 import com.hsshy.beam.sys.service.impl.ColumnTitleMap;
 import com.hsshy.beam.sys.service.impl.ExportDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -19,21 +18,23 @@ import java.util.Map;
 @RequestMapping(value = "/exportdata")
 public class ExportController {
     @Autowired
-    private IClienteleService clienteleService;
-    /**/
+    private ICustomerVisitService customerVisitService;
     @Autowired
     ExportDataService exportDataService;
 
     @GetMapping(value = "/excel")
-    public void getEx( HttpServletResponse response, @RequestParam(required = true) String time_start, @RequestParam(required = true) String end_start) {
+    public void getEx(HttpServletResponse response, String startTime, String endTime) {
         try {
-            Map<String,Object> params=new HashMap<>();
-            List<Map<String,Object>> list = clienteleService.queryResultListMap(params);
-            ArrayList<String> titleKeyList= new ColumnTitleMap("userinfo").getTitleKeyList();
-            Map<String, String> titleMap = new ColumnTitleMap("userinfo").getColumnTitleMap();
-            exportDataService.exportDataToEx(response, titleKeyList, titleMap, list);
+            Map<String, Object> params = new HashMap<>();
+            if (startTime != null && endTime != null) {
+                params.put("startTime", startTime);
+                params.put("endTime", endTime);
+            }
+            List<Map<String, Object>> list = customerVisitService.queryResultListMap(params);
+            ArrayList<String> titleKeyList = new ColumnTitleMap("customervisit").getTitleKeyList();
+            Map<String, String> titleMap = new ColumnTitleMap("customervisit").getColumnTitleMap();
+            exportDataService.exportDataToEx(response, titleKeyList, titleMap, list, startTime);
         } catch (Exception e) {
-            //
             System.out.println(e.toString());
         }
     }

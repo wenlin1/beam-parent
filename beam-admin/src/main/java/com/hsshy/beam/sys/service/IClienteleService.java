@@ -20,18 +20,26 @@ public interface IClienteleService extends IService<Clientele> {
     R updateClientele(Long ids[]);
 
     R addMyClient(Long ids[]);
+
     R deleteMyClient(Long ids[]);
+
     List<Clientele> clinetList();
-    R updateClienteleStatus(Map<String,Object> params);
+
+    R updateClienteleStatus(Map<String, Object> params);
 
     long getCustomerTotal();
-    long getMyCustomerTotal();
-    Long getCount();
-    Long getViewCount();
-    Long getIntentionCount();
-    Long getSigningCount();
-    List<Map<String,Object>> queryResultListMap(Map<String,Object> params);
 
+    long getMyCustomerTotal();
+
+    Long getCount();
+
+    Long getViewCount();
+
+    Long getIntentionCount();
+
+    Long getSigningCount();
+
+    List<Map<String, Object>> queryResultListMap(Map<String, Object> params);
 
 
 }

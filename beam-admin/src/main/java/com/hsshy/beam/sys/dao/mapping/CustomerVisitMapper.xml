@@ -18,32 +18,57 @@
         a.`id` AS "id",
         a.`user_id` AS "userId",
         a.`customer_id` AS "customerId",
+        DATE_FORMAT(a.`view_time`,'%Y-%m-%d') AS "visitTime",
         a.`visit_schedule` AS "visitSchedule",
         a.`visit_info` AS "visitInfo",
         a.`visit_type` AS "visitType",
         a.`result_info` AS "resultInfo",
         a.`amount` AS "amount",
         a.`creat_time` AS "createTime",
-        b.customer_store_name AS customerStoreName
+        b.customer_store_name AS customerStoreName,
+        e.name AS userName
     </sql>
 
     <select id="selectPageList" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
         select
         <include refid="Base_Column_List"/>
-        from customer_visit a left join sys_clientele b on a.customer_id=b.id
-        where a.user_id=#{customerVisit.userId}
+        from customer_visit a left join sys_clientele b on a.customer_id=b.customer_id left JOIN sys_user e
+        ON a.user_id=e.id
+        where 1=1
+        <if test="customerVisit.customerId != null and customerVisit.customerId != ''">
+            and a.customer_id=#{customerVisit.customerId}
+        </if>
+        <if test="customerVisit.visitType != null and customerVisit.visitType != ''">
+            and a.visit_type=#{customerVisit.visitType}
+        </if>
+        order by  a.`view_time` desc
     </select>
     <select id="getByVisitId" resultType="com.hsshy.beam.sys.entity.CustomerVisit">
         select
         <include refid="Base_Column_List"/>
-        from customer_visit a  left join sys_clientele b on a.customer_id=b.id
+        from customer_visit a  left join sys_clientele b on a.customer_id=b.customer_id
         where a.id=#{id}
+    </select>
+    <select id="queryResultListMap"  parameterType="HashMap"  resultType="HashMap">
+        select
+        b.customer_id AS customerId,
+        b.customer_store_name AS customerStoreName,
+        DATE_FORMAT(a.`view_time`,'%Y-%m-%d') AS "visitTime",
+        e.name AS userName,
+        a.`amount` AS "amount"
+        from customer_visit a left join sys_clientele b on a.customer_id=b.customer_id left JOIN sys_user e
+        ON a.user_id=e.id
+        where  a.visit_type=4
+        <if test="startTime!= null and startTime!= ''">
+            and  a.`view_time` &gt;=#{startTime}
+            and  a.`view_time` &lt;=#{endTime}
+        </if>
     </select>
 
     <insert id="saveVisit">
-        insert into customer_visit (user_id,customer_id, visit_schedule
+        insert into customer_visit (user_id,customer_id,view_time, visit_schedule
         ,visit_info,visit_type,result_info,amount)
-        values( #{customerVisit.userId}, #{customerVisit.customerId},#{customerVisit.visitSchedule},
+        values( #{customerVisit.userId}, #{customerVisit.customerId}, #{customerVisit.visitTime},#{customerVisit.visitSchedule},
         #{customerVisit.visitInfo}, #{customerVisit.visitType},#{customerVisit.resultInfo},#{customerVisit.amount} )
     </insert>
 

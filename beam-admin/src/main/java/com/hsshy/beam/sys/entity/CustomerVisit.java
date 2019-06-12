@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.hsshy.beam.common.base.entity.RestEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 @TableName("customer_visit")
-public class CustomerVisit  extends RestEntity<Long> {
+public class CustomerVisit extends RestEntity<Long> {
     /**
      * 主键id
      */
@@ -27,9 +28,17 @@ public class CustomerVisit  extends RestEntity<Long> {
     private String resultInfo;
     private int amount;
     private Date creatTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date visitTime;
 
     @TableField(exist = false)
-    private String  userName;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startTime;
+    @TableField(exist = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endTime;
+    @TableField(exist = false)
+    private String userName;
     @TableField(exist = false)
     private String customerStoreName;
 
