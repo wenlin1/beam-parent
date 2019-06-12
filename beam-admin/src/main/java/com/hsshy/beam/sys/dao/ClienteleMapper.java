@@ -34,4 +34,5 @@ public interface ClienteleMapper extends BaseMapper<Clientele> {
     long getCustomerTotal(Map<String, Object> params);
 
     List<Map<String, Object>> queryResultListMap(Map<String, Object> params);
+    void removeClientele();
 }

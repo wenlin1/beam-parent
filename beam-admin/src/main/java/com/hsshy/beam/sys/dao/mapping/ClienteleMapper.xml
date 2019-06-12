@@ -62,13 +62,13 @@
         </if>
         ORDER BY a.`create_time` desc
     </select>
-    <select id="selectMyPageList"  resultType="com.hsshy.beam.sys.entity.Clientele">
+    <select id="selectMyPageList" resultType="com.hsshy.beam.sys.entity.Clientele">
         select
         <include refid="Base_Column_List"/>
         from sys_clientele a
         WHERE a.is_delete = 0
-        and (a.sales_name IS NULL or  a.sales_name="")
-        and (a.sales_account IS NULL  or  a.sales_account="")
+        and (a.sales_name IS NULL or a.sales_name="")
+        and (a.sales_account IS NULL or a.sales_account="")
         <if test="clientele.customerStoreName != null and clientele.customerStoreName != ''">
             and a.customer_store_name=#{clientele.customerStoreName}
         </if>
@@ -138,7 +138,7 @@
         FROM sys_clientele
         WHERE sales_account=#{salesAccount} and sales_name=#{salesName}
     </select>
-    <select id="getCustomerTotal" resultType="Long"  parameterType="HashMap">
+    <select id="getCustomerTotal" resultType="Long" parameterType="HashMap">
         select
         count(1)
         from sys_clientele a
@@ -153,4 +153,17 @@
             and customer_tag=#{customerTag}
         </if>
     </select>
+    <update id="removeClientele">
+        UPDATE
+          sys_clientele
+        SET
+          into_time = NULL,
+          sales_account =NULL,
+          sales_name = NULL,
+          customer_tag = 1
+        WHERE sales_account IS NOT NULL
+          AND sales_name IS NOT NULL
+          AND into_time IS NOT NULL
+          AND TO_DAYS(NOW()) - TO_DAYS(into_time) > 7
+    </update>
 </mapper>

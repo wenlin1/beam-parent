@@ -40,6 +40,7 @@ public interface IClienteleService extends IService<Clientele> {
     Long getSigningCount();
 
     List<Map<String, Object>> queryResultListMap(Map<String, Object> params);
+    R removeClientele();
 
 
 }

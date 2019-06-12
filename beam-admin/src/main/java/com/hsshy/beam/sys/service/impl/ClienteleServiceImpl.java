@@ -166,4 +166,10 @@ public class ClienteleServiceImpl extends ServiceImpl<ClienteleMapper, Clientele
     public List<Map<String, Object>> queryResultListMap(Map<String, Object> params) {
         return baseMapper.queryResultListMap(params);
     }
+
+    @Override
+    public R removeClientele() {
+        baseMapper.removeClientele();
+        return R.ok();
+    }
 }
